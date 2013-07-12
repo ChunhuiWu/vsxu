@@ -97,7 +97,7 @@ public:
   vsx_transform_obj* transform_obj;
 
   // our texture info
-  vsx_texture_info texture_info;
+  vsx_texture_info* texture_info;
 
   // GL State
   void set_gl_state(void* n);

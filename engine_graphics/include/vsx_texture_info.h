@@ -186,10 +186,9 @@ class vsx_texture_glist_holder
 public:
   // glist reference counter
   size_t references;
-  vsx_texture_info* texture_info;
+  vsx_texture_info texture_info;
   vsx_texture_glist_holder() :
-    references(0),
-    texture_info(0x0)
+    references(0)
   {
   }
 };

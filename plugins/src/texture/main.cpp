@@ -463,9 +463,9 @@ public:
           float rMaxAniso;
           glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &rMaxAniso);
           if (anisotropic_filter->get())
-          glTexParameterf((*texture_out)->texture_info.ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
+          glTexParameterf((*texture_out)->texture_info->ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, rMaxAniso);
           else
-          glTexParameterf((*texture_out)->texture_info.ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
+          glTexParameterf((*texture_out)->texture_info->ogl_type, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
         }
 
         float vals[4];
@@ -474,13 +474,13 @@ public:
         vals[2] = border_color->get(2);
         vals[3] = border_color->get(3);
 
-        glTexParameteri((*texture_out)->texture_info.ogl_type,GL_TEXTURE_MIN_FILTER, tex_filter[min_filter->get()]);
-        glTexParameteri((*texture_out)->texture_info.ogl_type,GL_TEXTURE_MAG_FILTER, tex_filter[mag_filter->get()]);
+        glTexParameteri((*texture_out)->texture_info->ogl_type,GL_TEXTURE_MIN_FILTER, tex_filter[min_filter->get()]);
+        glTexParameteri((*texture_out)->texture_info->ogl_type,GL_TEXTURE_MAG_FILTER, tex_filter[mag_filter->get()]);
   #ifndef VSXU_OPENGL_ES
-        glTexParameterfv((*texture_out)->texture_info.ogl_type, GL_TEXTURE_BORDER_COLOR, vals);
+        glTexParameterfv((*texture_out)->texture_info->ogl_type, GL_TEXTURE_BORDER_COLOR, vals);
   #endif
-        glTexParameteri((*texture_out)->texture_info.ogl_type, GL_TEXTURE_WRAP_T, tex_wrap[wrap_t->get()]);
-        glTexParameteri((*texture_out)->texture_info.ogl_type, GL_TEXTURE_WRAP_S, tex_wrap[wrap_s->get()]);
+        glTexParameteri((*texture_out)->texture_info->ogl_type, GL_TEXTURE_WRAP_T, tex_wrap[wrap_t->get()]);
+        glTexParameteri((*texture_out)->texture_info->ogl_type, GL_TEXTURE_WRAP_S, tex_wrap[wrap_s->get()]);
         (*texture_out)->_bind();
 
         --param_updates;

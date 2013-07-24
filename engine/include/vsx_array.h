@@ -82,33 +82,33 @@ public:
     }
   }
 
-  T* get_pointer() {
+  inline T* get_pointer() {
     return A;
   }
-  T* get_end_pointer() {
+  inline T* get_end_pointer() {
     return &A[used-1];
   }
-  size_t get_allocated() {
+  inline size_t get_allocated() {
     return allocated;
   }
-  size_t get_used() {
+  inline size_t get_used() {
     return used;
   }
   // std::vector compatibility
-  size_t push_back(T val) {
+  inline size_t push_back(T val) {
     (*this)[used] = val;
     return used;
   }
-  size_t size() {
+  inline size_t size() {
     return used;
   }
 
-  size_t get_sizeof()
+  inline size_t get_sizeof()
   {
     return used * sizeof(T);
   }
 
-  void clear() {
+  inline void clear() {
     if (data_volatile) { return; }
   	if (A)
     free(A);

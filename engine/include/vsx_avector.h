@@ -45,29 +45,29 @@ public:
     return used;
   }
   // std::vector compatibility
-  size_t push_back(T val) {
+  inline size_t push_back(T val) {
     (*this)[used] = val;
     return used;
   }
 
-  size_t size() {
+  inline size_t size() {
     return used;
   }
 
-  void clear() {
+  inline void clear() {
     delete[] A;
     A = 0;
     allocated = used = 0;
     allocation_increment = 1;
   }
 
-  void reset_used(int val = 0) {
+  inline void reset_used(int val = 0) {
     if (val >= 0)
     used = val;
     else used = 0;
   }
 
-  void set_allocation_increment(unsigned long new_increment) {
+  inline void set_allocation_increment(unsigned long new_increment) {
   	allocation_increment = new_increment;
   }
 
@@ -111,7 +111,7 @@ public:
     return *this;
   }*/
 
-  T& operator[](size_t index) {
+  inline T& operator[](size_t index) {
     if (index >= allocated || allocated == 0)
     {
       // need to allocate stuff here

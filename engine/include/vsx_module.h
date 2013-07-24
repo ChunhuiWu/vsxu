@@ -153,6 +153,7 @@ public:
 
   vsx_module_engine_info()
   {
+    gl_state = 0x0;
     state = 0;
     amp = 1.0f;
     dtime = 0.0f;

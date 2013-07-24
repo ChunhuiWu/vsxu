@@ -29,7 +29,10 @@
 // recursive two dimensional third-grade newton raphson numerical analysis solver
 // and bezier curve
 
-class vsx_bezier_calc {
+class vsx_bezier_calc
+{
+public:
+
   float a;
   float b;
   float c;
@@ -39,7 +42,6 @@ class vsx_bezier_calc {
   float g;
   float h;
 
-public:
   float x0; // first coordinate
   float y0;
   float x1; // first handle
@@ -88,11 +90,13 @@ public:
     }  
   }
   
-  float x_from_t(float t) {
+  inline float x_from_t(float t)
+  {
     return t*(t*(a*t + b) + c) + d;
   }
 
-  float y_from_t(float t) {
+  inline float y_from_t(float t)
+  {
     return t*(t*(e*t + f) + g) + h;
   }
 

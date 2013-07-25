@@ -715,7 +715,8 @@ void vsx_texture::begin_capture_to_buffer()
   ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_TEXTURE_MATRIX );
   ((vsx_gl_state*)gl_state)->matrix_load_identity();
 
-  glEnable(GL_BLEND);
+  buffer_save_blend = ((vsx_gl_state*)gl_state)->blend_get();
+  ((vsx_gl_state*)gl_state)->blend_set(1);
 
   ((vsx_gl_state*)gl_state)->framebuffer_bind(frame_buffer_handle);
 
@@ -759,6 +760,8 @@ void vsx_texture::end_capture_to_buffer()
     ((vsx_gl_state*)gl_state)->matrix_mode( VSX_GL_TEXTURE_MATRIX );
     ((vsx_gl_state*)gl_state)->matrix_load_identity();
     ((vsx_gl_state*)gl_state)->matrix_mult_f( buffer_save_matrix[2].m );
+    ((vsx_gl_state*)gl_state)->blend_set(buffer_save_blend);
+
 
     glPopAttrib();
     capturing_to_buffer = false;

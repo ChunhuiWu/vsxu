@@ -73,6 +73,7 @@ class vsx_texture
 
   // save state for buffer capture
   vsx_matrix buffer_save_matrix[3];
+  int buffer_save_blend;
 
   // to prevent double-begins, lock the buffer
   bool capturing_to_buffer;

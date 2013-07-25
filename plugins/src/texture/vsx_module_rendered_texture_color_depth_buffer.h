@@ -228,11 +228,7 @@ public:
 
     texture->begin_capture_to_buffer();
 
-    //printf("changing viewport to %d\n",res_x);
-//    glViewport(0,0,res_x,res_y);
-    glDepthMask(GL_TRUE);
 
-    glEnable(GL_BLEND);
     glUseProgram(0);
 
     depth_buffer_texture.texture_info->ogl_id = texture->get_depth_buffer_handle();
@@ -254,12 +250,6 @@ public:
       texture->valid = true;
     }
     ((vsx_module_param_texture*)texture_result)->set(texture);
-
-
-    #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-    //printf("resetting viewport to %d %d %d %d\n",viewport[0],viewport[1],viewport[2],viewport[3]);
-    glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
-    #endif
   }
 
   void stop()

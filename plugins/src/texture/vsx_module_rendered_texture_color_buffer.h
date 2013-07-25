@@ -174,11 +174,8 @@ public:
       );
     }
 
+
     texture->begin_capture_to_buffer();
-
-    glDepthMask(GL_TRUE);
-
-    glEnable(GL_BLEND);
 
     glUseProgram(0);
 
@@ -192,6 +189,7 @@ public:
     {
       texture->end_capture_to_buffer();
     }
+
     ((vsx_module_param_texture*)texture_result)->set(texture);
 
   }

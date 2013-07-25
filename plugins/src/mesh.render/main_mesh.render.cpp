@@ -32,14 +32,14 @@
 
 
 
-
+#pragma GCC visibility push(hidden)
 #include "module_mesh_render.h"
 #include "module_mesh_render_billboards.h"
 #include "module_mesh_render_dots.h"
 #include "module_mesh_render_face_id.h"
 #include "module_mesh_render_line.h"
 #include "module_mesh_render_zsort.h"
-
+#pragma GCC visibility pop
 
 //******************************************************************************
 //*** F A C T O R Y ************************************************************

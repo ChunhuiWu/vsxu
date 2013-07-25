@@ -636,7 +636,7 @@ void vsx_texture::deinit_color_depth_buffer()
 
 
 // run in stop/start or when changing resolution
-VSX_TEXTURE_DLLIMPORT void vsx_texture::reinit_color_depth_buffer
+void vsx_texture::reinit_color_depth_buffer
 (
   int width,
   int height,

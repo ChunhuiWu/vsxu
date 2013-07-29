@@ -176,6 +176,7 @@ public:
   virtual vsx_comp* get_component_by_name(vsx_string label) = 0;
   virtual vsx_comp* get_by_id(unsigned long id) = 0;
   virtual vsx_module_param_abs* get_in_param_by_name(vsx_string module_name, vsx_string param_name) = 0;
+  virtual vsx_module* get_module_by_name(vsx_string module_name) = 0;
 
 
   // set tm*

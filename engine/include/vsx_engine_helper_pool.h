@@ -42,18 +42,12 @@ protected:
 
 public:
 
-  vsx_engine_helper_pool()
-  {
-
-  }
-
-  vsx_engine_helper_pool(vsx_string state_name, vsx_module_list_abs* module_list, vsx_gl_state* gl_state)
+  void init(vsx_string state_name, vsx_module_list_abs* module_list, vsx_gl_state* gl_state)
   {
     //exit(0);
 
     for (size_t i = 0; i < num_engines; i++)
     {
-      vsx_printf("init engine %d\n", i);
       engines[i] = new vsx_engine_helper(
             state_name,
             module_list,
@@ -62,13 +56,15 @@ public:
       this->on_create(i);
       engines[i]->render(100.0f);
 
-      engines_idle[i] = 0;
+      engines_idle[i] = 100;
     }
   }
 
+
+
   virtual void on_create(const int &handle)
   {
-
+    (void)handle;
   }
 
   virtual void on_return_handle(const int &handle)

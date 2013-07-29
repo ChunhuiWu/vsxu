@@ -247,6 +247,16 @@ vsx_comp* vsx_engine::get_by_id(unsigned long id)
 }
 
 
+vsx_module* vsx_engine::get_module_by_name(vsx_string module_name)
+{
+  if (forge_map.find(module_name) != forge_map.end())
+  {
+    return forge_map[module_name]->module;
+  }
+  return 0x0;
+}
+
+
 void vsx_engine::input_event(vsx_engine_input_event &new_input_event)
 {
   if (!valid) return;

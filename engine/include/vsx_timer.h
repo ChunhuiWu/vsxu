@@ -34,6 +34,17 @@
 #include <windows.h>
 #endif
 
+// get clock counter value (rdtsc)
+static __inline__ double get_cc(void)
+{
+  unsigned a, d;
+  asm volatile("rdtsc" : "=a" (a), "=d" (d));
+  double f = 0.00000000029411764705882;
+  return (double) (((uint64_t)a) | (((uint64_t)d) << 32)) *f;
+}
+
+
+
 class vsx_timer {
   double startt;
   double lastt;

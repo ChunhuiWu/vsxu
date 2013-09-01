@@ -22,7 +22,7 @@
 /*
  * _configuration.h
  */
-#ifdef BUILDING_DLL
+
 #ifndef _CONFIGURATION_H_
 #define _CONFIGURATION_H_
 
@@ -30,7 +30,7 @@
 //#define VSX_NO_TEXTURE
 #define VSX_NO_SEQUENCE
 #define VSX_NO_MESH
-#define VSX_STRINGLIB_NOSTL
+//#define VSX_STRINGLIB_NOSTL
 //#define VSX_NO_GL
 
 // parameter defines
@@ -56,4 +56,4 @@
 #define VSX_P_RESOURCE
 
 #endif /* _CONFIGURATION_H_ */
-#endif
+

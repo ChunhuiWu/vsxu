@@ -51,7 +51,7 @@ public:
 		if(previous_transform) previous_transform->transform();
 	};
 	void operator()() {transform();}
-	virtual ~vsx_transform_obj() {};
+  virtual ~vsx_transform_obj() {}
 };
 
 //--------------------------------------------------

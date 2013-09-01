@@ -48,7 +48,7 @@ void module_texture_scale::run() {
 	if (texture_info_in)
  {
 	  texture_out->valid = (*texture_info_in)->valid;
-  	texture_out->texture_info = (*texture_info_in)->texture_info;
+    (*texture_out->texture_info) = (*(*texture_info_in)->texture_info);
   	float x = scale_vec->get(0);
   	float y = scale_vec->get(1);
   	float z = scale_vec->get(2);

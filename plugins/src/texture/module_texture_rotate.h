@@ -45,19 +45,14 @@ void module_texture_rotate::declare_params(vsx_module_param_list& in_parameters,
 }
 
 void module_texture_rotate::run() {
-//printf("rotate_begin\n");
 
 	vsx_texture** texture_info_in = texture_info_param_in->get_addr();
-	//printf("validness: %d\n",texture_info_param_in->valid);
-//	if (texture_info_in->valid)
   if (texture_info_in)
   {
 
     texture_out->valid = (*texture_info_in)->valid;
 
-//	if (texture_info_in->texture_info) {
-  	texture_out->texture_info = (*texture_info_in)->texture_info;
-//  }
+    (*texture_out->texture_info) = (*(*texture_info_in)->texture_info);
 
   	float x = rotation_axis->get(0);
   	float y = rotation_axis->get(1);
@@ -66,17 +61,16 @@ void module_texture_rotate::run() {
   	vsx_transform_obj* prev_transform = (*texture_info_in)->get_transform();
   	transform.set_previous_transform(prev_transform);
   	transform.update(a, x, y, z);
-    //	if (texture_out)
   	texture_out->set_transform(&transform);
   	((vsx_module_param_texture*)texture_result)->set(texture_out);
-  }	else {
-    //printf("fooble\n");
+  }
+  else
+  {
     texture_result->valid = false;
   }
 }
 
-void module_texture_rotate::on_delete() {
+void module_texture_rotate::on_delete()
+{
   delete texture_out;
 }
-
-

@@ -45,7 +45,8 @@ void module_texture_translate::run() {
   if (texture_info_in)
   {
     texture_out->valid = (*texture_info_in)->valid;
-  	texture_out->texture_info = (*texture_info_in)->texture_info;
+    // copy texture info
+    (*texture_out->texture_info) = (*(*texture_info_in)->texture_info);
   	float x = translation_vec->get(0);
   	float y = translation_vec->get(1);
   	float z = translation_vec->get(2);
@@ -58,7 +59,8 @@ void module_texture_translate::run() {
   } else texture_result->valid = false;
 }
 
-void module_texture_translate::on_delete() {
+void module_texture_translate::on_delete()
+{
   delete texture_out;
 }
 

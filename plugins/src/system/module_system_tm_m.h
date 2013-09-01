@@ -1,4 +1,4 @@
-#ifdef VSXU_TM
+
 #include "vsx_tm.h"
 class module_system_tm_m : public vsx_module
 {
@@ -36,26 +36,33 @@ public:
 
   void param_set_notify(const vsx_string& name)
   {
+    #ifdef VSXU_TM
     if (name == "handle_name")
     {
       sname = handle_name->get();
       iname = (char*)sname.c_str();
     }
+    #endif
   }
 
   bool activate_offscreen()
   {
+    #ifdef VSXU_TM
     if (!engine->tm) return true;
     ((vsx_tm*)engine->tm)->e( iname );
+    #endif
     return true;
+
   }
 
   void deactivate_offscreen()
   {
+    #ifdef VSXU_TM
     if (!engine->tm) return;
     ((vsx_tm*)engine->tm)->l();
+    #endif
   }
 
 };
-#endif
+
 

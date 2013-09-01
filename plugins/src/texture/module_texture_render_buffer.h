@@ -1,4 +1,4 @@
-class vsx_module_render_buffer : public vsx_module {
+class module_texture_render_buffer : public vsx_module {
   // in
   vsx_module_param_render* my_render;
   vsx_module_param_int* texture_size;
@@ -22,7 +22,7 @@ class vsx_module_render_buffer : public vsx_module {
 
   GLint	viewport[4];
 public:
-  vsx_module_render_buffer() : texture(0) {};
+  module_texture_render_buffer() : texture(0) {}
 
 void module_info(vsx_module_info* info) {
   info->identifier = "texture;buffers;render_buffer";
@@ -250,7 +250,7 @@ void on_delete() {
   stop();
 }
 
-~vsx_module_render_buffer() {
+~module_texture_render_buffer() {
   if (texture)
   delete texture;
 }

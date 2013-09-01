@@ -1,4 +1,4 @@
-class vsx_module_rendered_texture_color_depth_buffer : public vsx_module
+class module_texture_render_surface_color_depth_buffer : public vsx_module
 {
   // in
   vsx_module_param_render* my_render;
@@ -24,7 +24,7 @@ class vsx_module_rendered_texture_color_depth_buffer : public vsx_module
 
   GLint	viewport[4];
 public:
-  vsx_module_rendered_texture_color_depth_buffer() : texture(0) {};
+  module_texture_render_surface_color_depth_buffer() : texture(0) {};
 
   void module_info(vsx_module_info* info)
   {
@@ -269,7 +269,7 @@ public:
     stop();
   }
 
-  ~vsx_module_rendered_texture_color_depth_buffer() {
+  ~module_texture_render_surface_color_depth_buffer() {
     if (texture)
     delete texture;
   }

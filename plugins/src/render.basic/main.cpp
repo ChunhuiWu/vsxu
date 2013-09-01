@@ -30,6 +30,7 @@
 #include "module_render_basic_colored_rectangle.h"
 #include "module_render_line.h"
 #include "module_render_basic_textured_rectangle.h"
+#include "module_render_basic_oscilloscope.h"
 
 
 //******************************************************************************
@@ -51,9 +52,10 @@ vsx_module* MOD_CM(unsigned long module, void* args)
 {
   VSX_UNUSED(args);
   switch (module) {
-    case 0: return (vsx_module*)new vsx_module_render_basic_textured_rectangle;
-    case 1: return (vsx_module*)new vsx_module_render_basic_colored_rectangle;
-    case 2: return (vsx_module*)new vsx_module_render_line;
+    case 0: return (vsx_module*)new module_render_basic_textured_rectangle;
+    case 1: return (vsx_module*)new module_render_basic_colored_rectangle;
+    case 2: return (vsx_module*)new module_render_line;
+    case 3: return (vsx_module*)new module_render_basic_oscilloscope;
   } // switch
   return 0;
 }
@@ -61,14 +63,15 @@ vsx_module* MOD_CM(unsigned long module, void* args)
 
 void MOD_DM(vsx_module* m,unsigned long module) {
   switch(module) {
-    case 0: delete (vsx_module_render_basic_textured_rectangle*)m; break;
-    case 1: delete (vsx_module_render_basic_colored_rectangle*)m; break;
-    case 2: delete (vsx_module_render_line*)m; break;
+    case 0: delete (module_render_basic_textured_rectangle*)m; break;
+    case 1: delete (module_render_basic_colored_rectangle*)m; break;
+    case 2: delete (module_render_line*)m; break;
+    case 3: delete (module_render_basic_oscilloscope*)m; break;
   }
 }
 
 
 unsigned long MOD_NM() {
-  return 3;
+  return 4;
 }  
 

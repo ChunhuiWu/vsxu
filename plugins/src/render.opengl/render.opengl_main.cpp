@@ -65,7 +65,8 @@ const unsigned int matrix_target_get_vsx[] =
 #include "module_render_gl_target_camera.h"
 #include "module_render_gl_translate.h"
 #include "module_render_gl_viewport_size.h"
-
+#include "module_render_gl_build_cubemap_texture.h"
+#include "module_render_gl_texture_coord_gen.h"
 
 
 
@@ -115,6 +116,8 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 22: return (vsx_module*)(new module_render_gl_texture_bind);
     case 23: return (vsx_module*)(new module_render_gl_viewport_size);
     case 24: return (vsx_module*)(new module_render_gl_buffer_clear);
+    case 25: return (vsx_module*)(new module_render_gl_build_cubemap_texture);
+    case 26: return (vsx_module*)(new module_render_gl_texture_coord_gen);
   }
   return 0;
 }
@@ -148,12 +151,14 @@ void destroy_module(vsx_module* m,unsigned long module)
     case 22: delete (module_render_gl_texture_bind*)m; break;
     case 23: delete (module_render_gl_viewport_size*)m; break;
     case 24: delete (module_render_gl_buffer_clear*)m; break;
+    case 25: delete (module_render_gl_build_cubemap_texture*)m; break;
+    case 26: delete (module_render_gl_texture_coord_gen*)m; break;
   }
 }
 
 unsigned long get_num_modules()
 {
   glewInit();
-  return 25;
+  return 27;
 }
 

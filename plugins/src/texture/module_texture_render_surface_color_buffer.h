@@ -1,5 +1,5 @@
 
-class vsx_module_rendered_texture_color_buffer : public vsx_module {
+class module_texture_render_surface_color_buffer : public vsx_module {
   // in
   vsx_module_param_render* my_render;
   vsx_module_param_int* texture_size;
@@ -20,7 +20,7 @@ class vsx_module_rendered_texture_color_buffer : public vsx_module {
 
   GLint	viewport[4];
 public:
-  vsx_module_rendered_texture_color_buffer() : texture(0) {};
+  module_texture_render_surface_color_buffer() : texture(0) {};
 
   void module_info(vsx_module_info* info)
   {
@@ -211,7 +211,7 @@ public:
     stop();
   }
 
-  ~vsx_module_rendered_texture_color_buffer() {
+  ~module_texture_render_surface_color_buffer() {
     if (texture)
     delete texture;
   }

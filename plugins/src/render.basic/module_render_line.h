@@ -1,4 +1,4 @@
-class vsx_module_render_line : public vsx_module
+class module_render_line : public vsx_module
 {
   // in
   vsx_module_param_float3* point_a;

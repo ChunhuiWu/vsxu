@@ -21,7 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-class vsx_module_texture_blur : public vsx_module {
+class module_texture_effect_blur : public vsx_module
+{
   // in
   vsx_module_param_texture* glow_source;
   vsx_module_param_float* start_value;
@@ -43,7 +44,7 @@ class vsx_module_texture_blur : public vsx_module {
 public:
 
 
-  ~vsx_module_texture_blur()
+  ~module_texture_effect_blur()
   {
   }
 

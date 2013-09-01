@@ -55,6 +55,12 @@
 #include "module_mesh_metaballs.h"
 #include "module_mesh_ocean_threaded.h"
 #include "module_mesh_ocean_tunnel_threaded.h"
+#include "module_mesh_cloud_plane.h"
+#include "module_mesh_planeworld.h"
+#include "module_mesh_thorn.h"
+#include "module_segmesh_loft.h"
+#include "module_segmesh_map_bspline.h"
+#include "module_segmesh_shape_basic.h"
 
 
 
@@ -97,6 +103,12 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 20: return (vsx_module*)(new module_mesh_metaballs);
     case 21: return (vsx_module*)(new module_mesh_ocean_threaded);
     case 22: return (vsx_module*)(new module_mesh_ocean_tunnel_threaded);
+    case 23: return (vsx_module*)(new module_mesh_cloud_plane);
+    case 24: return (vsx_module*)(new module_mesh_planeworld);
+    case 25: return (vsx_module*)(new module_mesh_thorn);
+    case 26: return (vsx_module*)(new module_segmesh_loft);
+    case 27: return (vsx_module*)(new module_segmesh_map_bspline);
+    case 28: return (vsx_module*)(new module_segmesh_shape_basic);
   }
   return 0;
 }
@@ -127,10 +139,16 @@ void destroy_module(vsx_module* m,unsigned long module)
     case 20: delete (module_mesh_metaballs*)m; break;
     case 21: delete (module_mesh_ocean_threaded*)m; break;
     case 22: delete (module_mesh_ocean_tunnel_threaded*)m; break;
+    case 23: delete (module_mesh_cloud_plane*)m; break;
+    case 24: delete (module_mesh_planeworld*)m; break;
+    case 25: delete (module_mesh_thorn*)m; break;
+    case 26: delete (module_segmesh_loft*)m; break;
+    case 27: delete (module_segmesh_map_bspline*)m; break;
+    case 28: delete (module_segmesh_shape_basic*)m; break;
   }
 } 
 
 unsigned long get_num_modules()
 {
-  return 23;
+  return 29;
 }

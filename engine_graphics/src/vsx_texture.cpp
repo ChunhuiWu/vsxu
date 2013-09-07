@@ -956,7 +956,7 @@ void vsx_texture::upload_ram_bitmap_2d(void* data, unsigned long size_x, unsigne
   // no compression
   if (bpp == GL_RGBA32F_ARB)
   {
-    glTexImage2D(texture_info->ogl_type, 0,bpp , size_x, size_y, 0, bpp2, GL_FLOAT, data);
+    glTexImage2D(texture_info->ogl_type, 0, bpp , size_x, size_y, 0, bpp2, GL_FLOAT, data);
   } else
   {
     if (bpp == 3)

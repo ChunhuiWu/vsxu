@@ -22,13 +22,15 @@
 */
 
 
-class module_mesh_ribbon : public vsx_module
+class module_mesh_vertices_ribbon : public vsx_module
 {
 public:
   // in
   vsx_module_param_float3* start_point;
   vsx_module_param_float3* end_point;
   vsx_module_param_float3* up_vector;
+  vsx_module_param_float* num_segments;
+  vsx_module_param_float* particle_scale;
   vsx_module_param_float* width;
   vsx_module_param_float* skew_amp;
   vsx_module_param_float* time_amp;
@@ -42,12 +44,15 @@ public:
 
   void module_info(vsx_module_info* info)
   {
-    info->identifier = "mesh;generators;ribbon";
-    info->description = "";
+    info->identifier = "mesh;vertices;ribbon_vertices";
+    info->description = "Useful for feeding particle cloud.";
     info->in_param_spec =
         "start_point:float3,"
         "end_point:float3,"
         "up_vector:float3,"
+
+        "num_segments:float,"
+        "particle_scale:float,"
         "width:float,"
         "skew_amp:float,"
         "time_amp:float"
@@ -64,6 +69,12 @@ public:
     end_point = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"end_point");
     up_vector = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"up_vector");
     width = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"width");
+
+    num_segments = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"num_segments");
+    num_segments->set(20.0);
+    particle_scale = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"particle_scale");
+    particle_scale->set(1.0);
+
     skew_amp = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"skew_amp");
     skew_amp->set(1.0f);
     time_amp = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"time_amp");
@@ -110,7 +121,9 @@ public:
 
     float t = engine->vtime * time_amp->get();
 
-    #define COUNT 20.0f
+    float p_scale = particle_scale->get();
+
+    float COUNT = num_segments->get();
     diff *= 1.0f / COUNT;
     float skew_amount = skew_amp->get();
     //     i=0   1   2   3   4   5   6   7   8   9
@@ -124,57 +137,21 @@ public:
     mesh->data->faces.reset_used();
     for (int i = 0; i < (int)COUNT; i++)
     {
-      int i2 = i << 2;
+      int i2 = i;
       float it = (float)i * one_div_count;
       float ft = sin(it * 3.14159f + t) * sin(-it * 5.18674f - t);
-      float thick = sin(it * 3.14159f);
+      float thick = fabs(sin(it * 3.14159f + t * 0.5));
       vsx_vector skew = up * ft * skew_amount * thick;
 
       mesh->data->vertices[i2    ] = pos + up * thick + skew;
-      mesh->data->vertices[i2 + 1] = pos - up * thick + skew;
-
-      mesh->data->vertices[i2 + 2] = pos + skew + up_side * thick;
-      mesh->data->vertices[i2 + 3] = pos + skew - up_side * thick;
 
       mesh->data->vertex_normals[i2    ] = normal;
-      mesh->data->vertex_normals[i2 + 1] = normal;
-      mesh->data->vertex_normals[i2 + 2] = normal;
-      mesh->data->vertex_normals[i2 + 3] = normal;
 
       pos += diff;
 
-      mesh->data->vertex_colors[i2] = vsx_color(1, 1, 1, 1);
-      mesh->data->vertex_colors[i2+1] = vsx_color(1, 1, 1, 1);
-      mesh->data->vertex_colors[i2+2] = vsx_color(1, 1, 1, 1);
-      mesh->data->vertex_colors[i2+3] = vsx_color(1, 1, 1, 1);
+      mesh->data->vertex_colors[i2] = vsx_color(thick * p_scale, thick * p_scale, thick * p_scale, 1.0);
 
       mesh->data->vertex_tex_coords[i2]   = vsx_tex_coord__(it, 0);
-      mesh->data->vertex_tex_coords[i2+1] = vsx_tex_coord__(it, 1);
-      mesh->data->vertex_tex_coords[i2+2] = vsx_tex_coord__(it, 0);
-      mesh->data->vertex_tex_coords[i2+3] = vsx_tex_coord__(it, 1);
-
-      if (!i) continue;
-
-      vsx_face a;
-      a.a = i2;
-      a.b = i2 - 3;
-      a.c = i2 - 4;
-      mesh->data->faces.push_back(a);
-
-      a.a = i2;
-      a.b = i2 + 1;
-      a.c = i2 - 3;
-      mesh->data->faces.push_back(a);
-
-      a.a = i2 + 2;
-      a.b = i2 - 1;
-      a.c = i2 - 2;
-      mesh->data->faces.push_back(a);
-
-      a.a = i2 + 2;
-      a.b = i2 + 3;
-      a.c = i2 - 1;
-      mesh->data->faces.push_back(a);
 
     }
     #undef COUNT

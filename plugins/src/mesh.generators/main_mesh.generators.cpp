@@ -32,7 +32,6 @@
 #include <semaphore.h>
 
 
-#include "module_mesh_rand_points.h"
 #include "module_mesh_bspline_vertices.h"
 #include "module_mesh_lightning_vertices.h"
 #include "module_mesh_rays.h"
@@ -62,6 +61,10 @@
 #include "module_segmesh_map_bspline.h"
 #include "module_segmesh_shape_basic.h"
 
+// vertices generators
+#include "module_mesh_vertices_rand_points.h"
+#include "module_mesh_vertices_ribbon.h"
+
 
 
 #ifndef _WIN32
@@ -81,7 +84,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
   switch(module)
   {
     case 0: return (vsx_module*)(new module_mesh_needle);
-    case 1: return (vsx_module*)(new module_mesh_rand_points);
+    case 1: return (vsx_module*)(new module_mesh_vertices_rand_points);
     case 2: return (vsx_module*)(new module_mesh_rays);
     case 3: return (vsx_module*)(new module_mesh_disc);
     case 4: return (vsx_module*)(new module_mesh_planes);
@@ -109,6 +112,7 @@ vsx_module* create_new_module(unsigned long module, void* args)
     case 26: return (vsx_module*)(new module_segmesh_loft);
     case 27: return (vsx_module*)(new module_segmesh_map_bspline);
     case 28: return (vsx_module*)(new module_segmesh_shape_basic);
+    case 29: return (vsx_module*)(new module_mesh_vertices_ribbon);
   }
   return 0;
 }
@@ -117,7 +121,7 @@ void destroy_module(vsx_module* m,unsigned long module)
 {
   switch(module) {
     case 0: delete (module_mesh_needle*)m; break;
-    case 1: delete (module_mesh_rand_points*)m; break;
+    case 1: delete (module_mesh_vertices_rand_points*)m; break;
     case 2: delete (module_mesh_rays*)m; break;
     case 3: delete (module_mesh_disc*)m; break;
     case 4: delete (module_mesh_planes*)m; break;
@@ -145,10 +149,11 @@ void destroy_module(vsx_module* m,unsigned long module)
     case 26: delete (module_segmesh_loft*)m; break;
     case 27: delete (module_segmesh_map_bspline*)m; break;
     case 28: delete (module_segmesh_shape_basic*)m; break;
+    case 29: delete (module_mesh_vertices_ribbon*)m; break;
   }
 } 
 
 unsigned long get_num_modules()
 {
-  return 29;
+  return 30;
 }

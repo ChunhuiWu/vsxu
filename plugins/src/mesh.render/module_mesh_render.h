@@ -39,6 +39,7 @@ class module_mesh_render : public vsx_module
   vsx_module_param_int* use_vertex_colors;
   vsx_module_param_int* use_display_list;
   vsx_module_param_int* particles_size_center;
+  vsx_module_param_int* particles_size_from_color;
   vsx_module_param_int* ignore_uvs_in_vbo_updates;
   vsx_module_param_particlesystem* particles_in;
 
@@ -301,6 +302,7 @@ public:
           "use_display_list:enum?no|yes,"
           "use_vertex_colors:enum?no|yes,"
           "particles_size_center:enum?no|yes,"
+          "particles_size_from_color:enum?no|yes,"
           "ignore_uvs_in_vbo_updates:enum?no|yes"
         "}";
     info->out_param_spec = "render_out:render";
@@ -328,6 +330,9 @@ public:
 
     particles_size_center = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"particles_size_center");
     particles_size_center->set(0);
+
+    particles_size_from_color = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"particles_size_from_color");
+    particles_size_from_color->set(0);
 
     ignore_uvs_in_vbo_updates = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"ignore_uvs_in_vbo_updates");
     ignore_uvs_in_vbo_updates->set(0);
@@ -767,11 +772,20 @@ public:
       glMatrixMode(GL_MODELVIEW);
       for (unsigned long i = 0; i < (*particle_mesh)->data->vertices.size(); ++i) {
         glPushMatrix();
+
         glTranslatef(
           (*particle_mesh)->data->vertices[i].x,
           (*particle_mesh)->data->vertices[i].y,
           (*particle_mesh)->data->vertices[i].z
         );
+        if (particles_size_from_color->get() && (*particle_mesh)->data->vertex_colors.size())
+        {
+          glScalef(
+            (*particle_mesh)->data->vertex_colors[i].r,
+            (*particle_mesh)->data->vertex_colors[i].g,
+            (*particle_mesh)->data->vertex_colors[i].b
+          );
+        }
         perform_draw();
         glPopMatrix();
       }

@@ -22,7 +22,7 @@
 */
 
 
-class module_mesh_rand_points : public vsx_module
+class module_mesh_vertices_rand_points : public vsx_module
 {
 public:
   // in

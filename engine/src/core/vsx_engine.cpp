@@ -168,6 +168,15 @@ vsx_module_engine_info* vsx_engine::get_engine_info()
   return &engine_info;
 }
 
+bool vsx_engine::get_render_hint_post_render_reset_component_status()
+{
+  return render_hint_post_render_reset_component_status;
+}
+
+void vsx_engine::set_render_hint_post_render_reset_component_status( bool new_value )
+{
+  render_hint_post_render_reset_component_status = new_value;
+}
 
 bool vsx_engine::get_render_hint_module_output_only()
 {
@@ -608,10 +617,19 @@ bool vsx_engine::render()
     }
     
     // post-rendering reset frame status of the components
+    if (render_hint_post_render_reset_component_status)
+    {
+      for(std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
+      {
+        (*it)->reset_has_run_status();
+      }
+    }
+
     for(std::vector<vsx_comp*>::iterator it = forge.begin(); it < forge.end(); ++it)
     {
       (*it)->reset_frame_status();
     }
+
 
     // when we're loading, we need to reset every component
     if (current_state == VSX_ENGINE_LOADING)

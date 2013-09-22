@@ -90,8 +90,16 @@ protected:
   int modules_loaded;
 
 //-- engine rendering / behaviour hints
+
+
+  // Output Only  -  default: false
   bool render_hint_module_output_only;
+
+  // Run Only     -  default: false
   bool render_hint_module_run_only;
+
+  // Reset Component Status   -  default: true
+  bool render_hint_post_render_reset_component_status;
 
 //-- module list
   vsx_module_list_abs* module_list;
@@ -199,8 +207,6 @@ public:
 
   // process messages - this should be run once per physical frame
   virtual void process_message_queue(vsx_command_list *cmd_in, vsx_command_list *cmd_out_res, bool exclusive = false, bool ignore_timing = false, float max_time = 0.01f) = 0;
-
-  //virtual ~vsx_engine_abs() {}
 
 };
 

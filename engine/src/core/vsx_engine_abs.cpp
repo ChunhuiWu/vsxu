@@ -87,6 +87,7 @@ void vsx_engine_abs::constructor_set_default_values()
   // rendering hints
   render_hint_module_output_only = false;
   render_hint_module_run_only = false;
+  render_hint_post_render_reset_component_status = true;
   frame_dcount = 0;
   frame_dtime = 0;
   frame_dprev = -1;

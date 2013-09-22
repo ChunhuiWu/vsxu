@@ -25,6 +25,7 @@
 class module_mesh_disc : public vsx_module
 {
 public:
+
   // in
   vsx_module_param_float* num_segments;
   vsx_module_param_float* width;
@@ -43,7 +44,11 @@ public:
   {
     info->identifier = "mesh;particles;mesh_disc";
     info->description = "A disc. simple as that.";
-    info->in_param_spec = "num_segments:float,diameter:float,border_width:float";
+    info->in_param_spec =
+      "num_segments:float,"
+      "diameter:float,"
+      "border_width:float"
+    ;
     info->out_param_spec = "mesh:mesh";
     info->component_class = "mesh";
   }
@@ -54,10 +59,13 @@ public:
     loading_done = true;
     num_segments = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"num_segments");
     num_segments->set(20);
+
     width = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"border_width");
     width->set(1);
+
     diameter = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"diameter");
     diameter->set(1);
+
     n_segs = 20;
 
     result = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh");
@@ -81,7 +89,8 @@ public:
     if (l_param_updates != param_updates) first_run = true;
     mesh->data->vertices[0] = vsx_vector(0);
 
-    if (first_run || n_segs != num_segments->get()) {
+    if (first_run || n_segs != num_segments->get())
+    {
       l_param_updates = param_updates;
       mesh->data->vertices.reset_used();
       mesh->data->faces.reset_used();

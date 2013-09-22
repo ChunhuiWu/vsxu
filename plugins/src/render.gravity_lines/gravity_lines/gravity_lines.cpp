@@ -25,12 +25,15 @@ void gravity_lines::init()
 	num_lines = 40;
 	vsx_vector v;
 	
-	for(int i = 0; i < num_lines / 3; i++) {
+  for(int i = 0; i < num_lines / 3; i++)
+  {
 		Mass m; 
 		m.init(v, v, 7 / (rand() / (float)RAND_MAX * 2.5f + 0.35f));
 	  masses.push_back(m);
 	}
-	for(int i = num_lines / 3; i < num_lines+1; i++) {
+
+  for(int i = num_lines / 3; i < num_lines+1; i++)
+  {
 		Mass m; 
 		m.init(v, v, 7 / (rand() / (float)RAND_MAX * 1.1f + 1.31f));
 	  masses.push_back(m);

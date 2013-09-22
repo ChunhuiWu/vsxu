@@ -134,9 +134,13 @@ public:
   void output(vsx_module_param_abs* param)
   {
     mesh = in_mesh->get_addr();
+
     // sanity checks
-    if (!mesh) return;
-    if (!(*mesh)->data->vertices.size()) return;
+    if (!mesh)
+      return;
+
+    if (!(*mesh)->data->vertices.size())
+      return;
 
     if (prev_num_vertices != (unsigned long)mesh_id_count->get())
     {

@@ -740,7 +740,12 @@ public:
     #endif
     mesh = mesh_in->get_addr();
     // sanity checks
-    if (!mesh) { message="module||Can not render: mesh is not set"; render_result->set(0); return; }
+    if (!mesh)
+    {
+      message="module||Can not render: mesh is not set";
+      render_result->set(0);
+      return;
+    }
     if (!(*mesh)->data) { message="module||Can not render: Mesh data is not set"; render_result->set(0); return; }
     if (!(*mesh)->data->faces.get_used()) { message="module||Can not render: Mesh has no faces"; render_result->set(0); return; }
     message="module||ok";

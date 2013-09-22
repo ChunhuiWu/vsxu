@@ -55,11 +55,14 @@ public:
   float wind_y;
 
   virtual void init();
-  virtual void un_init() {
-  	for (unsigned long i = 0; i < oldPos.size(); ++i) {
+  virtual void un_init()
+  {
+    for (unsigned long i = 0; i < oldPos.size(); ++i)
+    {
   		delete oldPos[i];
     }
   }
+
   virtual void reset_pos(float x, float y, float z);
   virtual void update(float delta_time, float x, float y, float z);
   virtual void render();
@@ -70,6 +73,7 @@ public:
   unsigned long offs;
   std::vector<Mass> masses;
   std::vector<vsx_vector*> oldPos;
+
   ~gravity_lines();
 };
 

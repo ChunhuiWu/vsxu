@@ -55,9 +55,9 @@ protected:
 	};
 
 	frame_status_enum frame_status;
+  bool has_run;
   
   bool all_valid;
-	bool output_finished;
 	vsx_timer run_timer;
 	
 public:
@@ -113,30 +113,16 @@ public:
   void re_init_out_params();
   void init_channels();
 
-	void reset_frame_status() {
-    output_finished = false;
-#ifdef VSXU_MODULE_TIMING    
-    time_output = new_time_output;
-    time_run = new_time_run;
-    new_time_output = 0.0f;
-    new_time_run = 0.0f;
-#endif
-    //if (frame_status != initial_status)
-    //{
-      /*if (dtime+vtime == 0)
-      {
-        local_engine_info.dtime = -local_engine_info.vtime+local_engine_info.dtime;
-        local_engine_info.vtime = 0;
-      } else  */
-      //		local_engine_info.vtime += local_engine_info.dtime = time_multiplier*dtime;
-/*      local_engine_info.real_vtime = e->real_vtime;
-      local_engine_info.real_dtime = e->real_dtime;
-      local_engine_info.vtime = e->vtime;
-      local_engine_info.dtime = e->dtime;
-      local_engine_info.state = e->state;
-    }		*/
+  void reset_has_run_status()
+  {
+    has_run = false;
+  }
+
+  void reset_frame_status()
+  {
 		frame_status = initial_status;
 	}
+
   vsx_comp();
   ~vsx_comp();
 };

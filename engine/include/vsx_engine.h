@@ -117,6 +117,10 @@ public:
   bool get_render_hint_module_run_only();
   void set_render_hint_module_run_only(bool new_value);
 
+  // don't reset frame status when done rendering
+  bool get_render_hint_post_render_reset_component_status();
+  void set_render_hint_post_render_reset_component_status( bool new_value );
+
 
 
 //-- time manipulation and status

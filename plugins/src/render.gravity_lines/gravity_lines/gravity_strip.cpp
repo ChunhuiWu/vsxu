@@ -25,9 +25,10 @@ void gravity_strip::init_strip()
 
 vsx_timer timer;
 
-void gravity_strip::render() {
+void gravity_strip::render()
+{
   if (!oldPos.size()) return;
-    glBegin(GL_QUAD_STRIP);
+  glBegin(GL_QUAD_STRIP);
 
     float p = 1.0f/num_lines;
     float p_ = 1-p;
@@ -42,7 +43,8 @@ void gravity_strip::render() {
               color0[1]*p_ + p * color1[1],
               color0[2]*p_ + p * color1[2],
               1.0f);
-    for(int j = 0; j < num; j++) {
+    for(int j = 0; j < num; j++)
+    {
       int k = (i_ofs + j) % (BUFF_LEN-1);
 
       vsx_vector d;
@@ -73,7 +75,7 @@ void gravity_strip::render() {
         glNormal3f(res_n.x, res_n.y, res_n.z);
       }
     }
-    glEnd();
+  glEnd();
 }
 
 void gravity_strip::generate_mesh(

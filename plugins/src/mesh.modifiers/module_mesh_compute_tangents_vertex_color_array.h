@@ -68,7 +68,6 @@ public:
     mesh_in = (vsx_module_param_mesh*)in_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_in");
     loading_done = true;
     mesh_out = (vsx_module_param_mesh*)out_parameters.create(VSX_MODULE_PARAM_ID_MESH,"mesh_out");
-    mesh_out->set_p(mesh);
   }
 
   unsigned long prev_timestamp;
@@ -159,8 +158,6 @@ public:
     mesh->timestamp++;
 
     mesh_out->set_p(mesh);
-
-
 
   }
 };

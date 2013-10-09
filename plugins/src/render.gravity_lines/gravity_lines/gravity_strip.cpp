@@ -20,6 +20,7 @@ void gravity_strip::init_strip()
 	Mass m;
 	m.init(v,v,7 / (rand() / (float)RAND_MAX * 2.5f + 0.35f));
 	masses.push_back(m);
+  masses.push_back(m);
 	first = true;
 }
 

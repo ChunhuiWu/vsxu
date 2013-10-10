@@ -103,9 +103,11 @@ i = 0..n	1.3 ^ i	   1.3 ^ i - 1	  1.3^i-1 / 1.3^n	  (1.3^i-1 / 1.3^n) * (n-1) + 
 //******************************************************************************
 
 int rtaudio_type = 0;
-
+#include "vsx_sample.h"
+#include "vsx_sample_mixer.h"
 #include "vsx_listener_rtaudio.h"
 #include "vsx_listener_mediaplayer.h"
+#include "vsx_module_sample_trigger.h"
 
 
 //******************************************************************************
@@ -159,47 +161,51 @@ vsx_module* create_new_module(unsigned long module, void* args)
   switch(module)
   {
     case 0:
-    if (internal_args->has_param("sound_type_media_player"))
-    {
-      sound_module_type = 1;
-      return (vsx_module*)(new vsx_listener_mediaplayer);
-    }
-    else
-    {
-      #if (PLATFORM == PLATFORM_LINUX)
-      if (internal_args->has_param("sound_type_alsa"))
+      if (internal_args->has_param("sound_type_media_player"))
       {
-        // ALSA
-        rtaudio_type = RtAudio::LINUX_ALSA;
-      } else
-      if (internal_args->has_param("sound_type_jack"))
-      {
-        // JACK
-        rtaudio_type = RtAudio::UNIX_JACK;
-      } else
-      if (internal_args->has_param("sound_type_oss"))
-      {
-        // OSS
-        rtaudio_type = RtAudio::LINUX_OSS;
-      } else
-      {
-        // default - PulseAudio
-        rtaudio_type = RtAudio::LINUX_PULSE;
+        sound_module_type = 1;
+        return (vsx_module*)(new vsx_listener_mediaplayer);
       }
-      #endif
-      #if (PLATFORM == PLATFORM_WINDOWS)
-      if (internal_args->has_param("sound_type_asio"))
+      else
       {
-        // asio
-        rtaudio_type = RtAudio::WINDOWS_ASIO;
-      } else
-      {
-        // directsound
-        rtaudio_type = RtAudio::WINDOWS_DS;
-      }
-      #endif
-      sound_module_type = 0;
-      return (vsx_module*)(new vsx_listener_pulse);
+        #if (PLATFORM == PLATFORM_LINUX)
+        if (internal_args->has_param("sound_type_alsa"))
+        {
+          // ALSA
+          rtaudio_type = RtAudio::LINUX_ALSA;
+        } else
+        if (internal_args->has_param("sound_type_jack"))
+        {
+          // JACK
+          rtaudio_type = RtAudio::UNIX_JACK;
+        } else
+        if (internal_args->has_param("sound_type_oss"))
+        {
+          // OSS
+          rtaudio_type = RtAudio::LINUX_OSS;
+        } else
+        {
+          // default - PulseAudio
+          rtaudio_type = RtAudio::LINUX_PULSE;
+        }
+        #endif
+        #if (PLATFORM == PLATFORM_WINDOWS)
+        if (internal_args->has_param("sound_type_asio"))
+        {
+          // asio
+          rtaudio_type = RtAudio::WINDOWS_ASIO;
+        } else
+        {
+          // directsound
+          rtaudio_type = RtAudio::WINDOWS_DS;
+        }
+        #endif
+        sound_module_type = 0;
+        return (vsx_module*)(new vsx_listener_pulse);
+      break;
+      case 1:
+          rtaudio_type = RtAudio::LINUX_PULSE;
+          return (vsx_module*)(new vsx_module_sample_trigger);
     }
   }
   return 0;
@@ -207,21 +213,29 @@ vsx_module* create_new_module(unsigned long module, void* args)
 
 void destroy_module(vsx_module* m,unsigned long module)
 {
-  switch(sound_module_type)
+  switch (module)
   {
     case 0:
-    return delete (vsx_listener_pulse*)m;
+      switch(sound_module_type)
+      {
+        case 0:
+        return delete (vsx_listener_pulse*)m;
+        case 1:
+        return delete (vsx_listener_mediaplayer*)m;
+      }
+    break;
     case 1:
-    return delete (vsx_listener_mediaplayer*)m;
+    return delete (vsx_module_sample_trigger*)m;
   }
+
 }
 
 unsigned long get_num_modules() {
-  return 1;
+  return 2;
 }
 
 void on_unload_library()
 {
-  shutdown_rtaudio();
+  shutdown_rtaudio_record();
 }
 

@@ -189,12 +189,12 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 }
 
 bool init() {
-  setup_rtaudio();
+  setup_rtaudio_record();
   return true;
 }
 
 void on_delete() {
-  shutdown_rtaudio();
+  shutdown_rtaudio_record();
   delete spectrum.data;
 }
 

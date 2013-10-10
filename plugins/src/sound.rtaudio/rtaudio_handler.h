@@ -153,8 +153,85 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 }
 
 
+const double timeslot = 1.0f / 44100 * 256.0;
 
-void setup_rtaudio()
+double st = 0.0;
+
+
+vsx_sample_mixer main_mixer;
+
+// Two-channel sawtooth wave generator.
+int play_callback( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
+         double streamTime, RtAudioStreamStatus status, void *userData )
+{
+  unsigned int i, j;
+  int16_t *buffer = (int16_t *) outputBuffer;
+  int16_t *lastValues = (int16_t *) userData;
+
+  if ( status )
+    printf("Stream underflow detected!\n");
+  // Write interleaved audio data.
+  for ( i=0; i<nBufferFrames; i++ )
+  {
+    for ( j=0; j<2; j++ )
+    {
+      *buffer = (int16_t)main_mixer.consume();
+      *buffer++;
+    }
+    st += timeslot;
+  }
+  return 0;
+}
+
+void setup_rtaudio_play()
+{
+  if (padc)
+  {
+    rt_refcounter++;
+    return;
+  }
+  else
+  {
+    padc = new RtAudio((RtAudio::Api)rtaudio_type);
+    rt_refcounter++;
+    #if (PLATFORM == PLATFORM_WINDOWS)
+    rt_refcounter++;
+    #endif
+  }
+
+  if ( padc->getDeviceCount() < 1 )
+  {
+    printf("WARNING::::::::      No audio devices found!\n");
+    return;
+  }
+
+
+  RtAudio::StreamParameters parameters;
+  parameters.deviceId = padc->getDefaultInputDevice();
+  parameters.nChannels = 2;
+  parameters.firstChannel = 0;
+  unsigned int sampleRate = 44100;
+  unsigned int bufferFrames = 128;
+  double data[2];
+
+  RtAudio::StreamOptions options;
+      options.streamName = "vsxu";
+  try
+  {
+    padc->openStream( &parameters, NULL, RTAUDIO_SINT16,
+                      sampleRate, &bufferFrames, &play_callback, (void *)&data );
+    padc->startStream();
+  }
+  catch ( RtError& e )
+  {
+    e.printMessage();
+  }
+
+
+}
+
+
+void setup_rtaudio_record()
 {
   if (padc)
   {
@@ -218,7 +295,7 @@ void setup_rtaudio()
   }
 }
 
-void shutdown_rtaudio()
+void shutdown_rtaudio_record()
 {
   if (!padc) return;
   if (rt_refcounter == 0) return;

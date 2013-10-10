@@ -14,10 +14,21 @@ public:
       if (!channels[i])
         continue;
 
-      current_value += (float)channels[i]->consume() * one_div_32768;
+      float val = (float)channels[i]->consume() * one_div_32768;
+      //vsx_printf("val: %f\n", val);
+      current_value += val;
       active_channels++;
     }
-    current_value /= (float)active_channels;
+
+    if (active_channels == 0)
+    {
+      current_value = 0.0f;
+    }
+    else
+    {
+      current_value /= (float)active_channels;
+    }
+//    vsx_printf("active_channels: %d\n", active_channels);
 
     return (int16_t) (current_value * 32768.0);
   }

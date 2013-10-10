@@ -25,10 +25,13 @@ class vsx_module_sample_trigger : public vsx_module
 {
   // in
   vsx_module_param_resource* filename;
+  vsx_module_param_float* trigger;
+  vsx_module_param_float* pitch;
   // out
 
   // private
   vsx_sample main_sample;
+  float trigger_old;
 public:
 
 
@@ -37,7 +40,7 @@ public:
     info->output = 1;
     info->identifier = "sound;sample_trigger";
     info->description = "";
-    info->in_param_spec = "filename:resource";
+    info->in_param_spec = "filename:resource,trigger:float,pitch:float";
     info->out_param_spec = "";
     info->component_class = "output";
   }
@@ -46,6 +49,11 @@ public:
   {
     filename = (vsx_module_param_resource*)in_parameters.create(VSX_MODULE_PARAM_ID_RESOURCE,"filename");
     filename->set("");
+
+    trigger = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"trigger");
+    pitch = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"pitch");
+
+    trigger_old = 0.0f;
     loading_done = true;
   }
 
@@ -55,6 +63,16 @@ public:
     setup_rtaudio_play();
     main_mixer.register_sample( &main_sample );
     return true;
+  }
+
+  void param_set_notify(const vsx_string& name)
+  {
+    if (name == "filename")
+    {
+      main_sample.set_filesystem( engine->filesystem );
+      main_sample.load_filename( filename->get() );
+    }
+
   }
 
   void on_delete()
@@ -67,9 +85,14 @@ public:
     if (param_updates)
     {
       param_updates = 0;
-      main_sample.set_filesystem( engine->filesystem );
-      main_sample.load_filename( filename->get() );
     }
+
+    main_sample.pitch_bend = trigger->get() + pitch->get() * 2.0f;
+    if (trigger_old < 1.0f && trigger->get() >= 1.0f)
+    {
+      main_sample.trigger();
+    }
+    trigger_old = trigger->get();
   }
 };
 

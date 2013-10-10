@@ -173,9 +173,12 @@ int play_callback( void *outputBuffer, void *inputBuffer, unsigned int nBufferFr
   // Write interleaved audio data.
   for ( i=0; i<nBufferFrames; i++ )
   {
-    for ( j=0; j<2; j++ )
+    //for ( j=0; j<2; j++ )
     {
-      *buffer = (int16_t)main_mixer.consume();
+      int16_t val = (int16_t)main_mixer.consume();
+      *buffer = val;
+      *buffer++;
+      *buffer = val;
       *buffer++;
     }
     st += timeslot;

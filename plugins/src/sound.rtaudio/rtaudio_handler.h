@@ -29,10 +29,13 @@ float fftbuf[1024];
 size_t fftbuf_it = 0;
 
 // rt audio instance
-RtAudio* padc = 0x0;
+RtAudio* padc_record = 0x0;
+RtAudio* padc_play = 0x0;
 
 // reference counter
-size_t rt_refcounter = 0;
+size_t rt_record_refcounter = 0;
+
+size_t rt_play_refcounter = 0;
 
 FFTReal* fftr = 0x0;
 
@@ -173,14 +176,10 @@ int play_callback( void *outputBuffer, void *inputBuffer, unsigned int nBufferFr
   // Write interleaved audio data.
   for ( i=0; i<nBufferFrames; i++ )
   {
-    //for ( j=0; j<2; j++ )
-    {
-      int16_t val = (int16_t)main_mixer.consume();
-      *buffer = val;
-      *buffer++;
-      *buffer = val;
-      *buffer++;
-    }
+    *buffer = (int16_t)main_mixer.consume_left();
+    *buffer++;
+    *buffer = (int16_t)main_mixer.consume_right();
+    *buffer++;
     st += timeslot;
   }
   return 0;
@@ -188,21 +187,21 @@ int play_callback( void *outputBuffer, void *inputBuffer, unsigned int nBufferFr
 
 void setup_rtaudio_play()
 {
-  if (padc)
+  if (padc_play)
   {
-    rt_refcounter++;
+    rt_play_refcounter++;
     return;
   }
   else
   {
-    padc = new RtAudio((RtAudio::Api)rtaudio_type);
-    rt_refcounter++;
+    padc_play = new RtAudio((RtAudio::Api)rtaudio_type);
+    rt_play_refcounter++;
     #if (PLATFORM == PLATFORM_WINDOWS)
-    rt_refcounter++;
+    rt_play_refcounter++;
     #endif
   }
 
-  if ( padc->getDeviceCount() < 1 )
+  if ( padc_play->getDeviceCount() < 1 )
   {
     printf("WARNING::::::::      No audio devices found!\n");
     return;
@@ -210,48 +209,83 @@ void setup_rtaudio_play()
 
 
   RtAudio::StreamParameters parameters;
-  parameters.deviceId = padc->getDefaultInputDevice();
+  parameters.deviceId = padc_play->getDefaultInputDevice();
   parameters.nChannels = 2;
   parameters.firstChannel = 0;
   unsigned int sampleRate = 44100;
-  unsigned int bufferFrames = 128;
+  unsigned int bufferFrames = 64;
   double data[2];
 
   RtAudio::StreamOptions options;
-      options.streamName = "vsxu";
+  options.streamName = "vsxu";
+
   try
   {
-    padc->openStream( &parameters, NULL, RTAUDIO_SINT16,
-                      sampleRate, &bufferFrames, &play_callback, (void *)&data );
-    padc->startStream();
+    padc_play->openStream
+    (
+      &parameters,
+      NULL,
+      RTAUDIO_SINT16,
+      sampleRate,
+      &bufferFrames,
+      &play_callback,
+      (void *)&data,
+      &options
+    );
+    padc_play->startStream();
   }
   catch ( RtError& e )
   {
     e.printMessage();
   }
 
-
 }
+
+void shutdown_rtaudio_play()
+{
+  if (!padc_play) return;
+  if (rt_play_refcounter == 0) return;
+  rt_play_refcounter--;
+
+  if (rt_play_refcounter == 0)
+  {
+    try
+    {
+      // Stop the stream
+      padc_play->stopStream();
+    }
+    catch (RtError& e)
+    {
+      e.printMessage();
+    }
+
+    if ( padc_play->isStreamOpen() )
+      padc_play->closeStream();
+    delete padc_play;
+    padc_play = 0;
+  }
+}
+
 
 
 void setup_rtaudio_record()
 {
-  if (padc)
+  if (padc_record)
   {
-    rt_refcounter++;
+    rt_record_refcounter++;
     return;
   }
   else
   {
-    padc = new RtAudio((RtAudio::Api)rtaudio_type);
+    padc_record = new RtAudio((RtAudio::Api)rtaudio_type);
     fftr = new FFTReal(512);
-    rt_refcounter++;
+    rt_record_refcounter++;
     #if (PLATFORM == PLATFORM_WINDOWS)
-    rt_refcounter++;
+    rt_record_refcounter++;
     #endif
   }
 
-  if ( padc->getDeviceCount() < 1 )
+  if ( padc_record->getDeviceCount() < 1 )
   {
     printf("WARNING::::::::      No audio devices found!\n");
     return;
@@ -271,7 +305,7 @@ void setup_rtaudio_record()
 
 
   RtAudio::StreamParameters parameters;
-  parameters.deviceId = padc->getDefaultInputDevice();
+  parameters.deviceId = padc_record->getDefaultInputDevice();
   parameters.nChannels = 2;
   parameters.firstChannel = 0;
   unsigned int sampleRate = 44100;
@@ -281,7 +315,7 @@ void setup_rtaudio_record()
       options.streamName = "vsxu";
 
   try {
-    padc->openStream(
+    padc_record->openStream(
       NULL,
       &parameters,
       RTAUDIO_SINT16,
@@ -291,7 +325,7 @@ void setup_rtaudio_record()
       NULL,
       &options
     );
-    padc->startStream();
+    padc_record->startStream();
   }
   catch ( RtError& e ) {
     e.printMessage();
@@ -300,23 +334,23 @@ void setup_rtaudio_record()
 
 void shutdown_rtaudio_record()
 {
-  if (!padc) return;
-  if (rt_refcounter == 0) return;
-  rt_refcounter--;
+  if (!padc_record) return;
+  if (rt_record_refcounter == 0) return;
+  rt_record_refcounter--;
 
-  if (rt_refcounter == 0)
+  if (rt_record_refcounter == 0)
   {
     try {
       // Stop the stream
-      padc->stopStream();
+      padc_record->stopStream();
     }
     catch (RtError& e) {
       e.printMessage();
     }
 
-    if ( padc->isStreamOpen() ) padc->closeStream();
-    delete padc;
+    if ( padc_record->isStreamOpen() ) padc_record->closeStream();
+    delete padc_record;
     delete fftr;
-    padc = 0;
+    padc_record = 0;
   }
 }

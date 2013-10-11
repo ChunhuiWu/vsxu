@@ -27,20 +27,32 @@ class vsx_module_sample_trigger : public vsx_module
   vsx_module_param_resource* filename;
   vsx_module_param_float* trigger;
   vsx_module_param_float* pitch;
+  vsx_module_param_float* gain;
+  vsx_module_param_int* format;
   // out
 
   // private
-  vsx_sample main_sample;
+  vsx_sample_raw main_sample;
   float trigger_old;
-public:
 
+public:
 
   void module_info(vsx_module_info* info)
   {
     info->output = 1;
-    info->identifier = "sound;sample_trigger";
-    info->description = "";
-    info->in_param_spec = "filename:resource,trigger:float,pitch:float";
+    info->identifier = "sound;raw_sample_trigger";
+    info->description =
+      "Plays 16-bit signed int PCM\n"
+      "RAW files; mono or stereo."
+    ;
+
+    info->in_param_spec =
+      "filename:resource,"
+      "trigger:float,"
+      "pitch:float,"
+      "gain:float,"
+      "format:enum?mono|stereo"
+    ;
     info->out_param_spec = "";
     info->component_class = "output";
   }
@@ -52,6 +64,10 @@ public:
 
     trigger = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"trigger");
     pitch = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"pitch");
+    gain = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"gain");
+    gain->set(1.0f);
+
+    format = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"format");
 
     trigger_old = 0.0f;
     loading_done = true;
@@ -59,7 +75,6 @@ public:
 
   bool init()
   {
-    vsx_printf("module init\n");
     setup_rtaudio_play();
     main_mixer.register_sample( &main_sample );
     return true;
@@ -72,11 +87,12 @@ public:
       main_sample.set_filesystem( engine->filesystem );
       main_sample.load_filename( filename->get() );
     }
-
   }
 
   void on_delete()
   {
+    main_mixer.unregister_sample( &main_sample );
+    shutdown_rtaudio_play();
   }
 
 
@@ -87,11 +103,21 @@ public:
       param_updates = 0;
     }
 
-    main_sample.pitch_bend = trigger->get() + pitch->get() * 2.0f;
+    main_sample.set_pitch_bend( trigger->get() + pitch->get() * 2.0f );
+    main_sample.set_gain( gain->get() );
+
+    main_sample.set_stereo_type( format->get() + 1 );
+
+    if (trigger->get() < 0.1f)
+    {
+      main_sample.stop();
+    }
+
     if (trigger_old < 1.0f && trigger->get() >= 1.0f)
     {
       main_sample.trigger();
     }
+
     trigger_old = trigger->get();
   }
 };

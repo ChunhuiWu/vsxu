@@ -4,6 +4,8 @@
 #define VSX_SAMPLE_MONO 1
 #define VSX_SAMPLE_STEREO 2
 
+#define ONE_DIV_32767 1.0/32767.0
+
 class vsx_sample
 {
 protected:
@@ -119,7 +121,14 @@ public:
     // set value so that the consume_right
     // method can use it if we're a mono sample
 
-    prev_left_value = (int16_t) ( data[ round(position) ] );
+
+    float start_val = data[ floor(position) ] * ONE_DIV_32767;
+    float end_val = data[ ceil(position) ] * ONE_DIV_32767;
+    float factor = position - floor(position);
+    float res = (factor) * end_val + (1.0 - factor) * start_val;
+
+
+    prev_left_value = (int16_t) ( res * 32767.0f );
     return prev_left_value;
   }
 
@@ -134,8 +143,15 @@ public:
     if (state == VSX_SAMPLE_STATE_STOPPED)
       return 0;
 
+
+    float start_val = data[ floor(position) + 1.0f ] * ONE_DIV_32767;
+    float end_val = data[ ceil(position) + 1.0f ] * ONE_DIV_32767;
+    float factor = position - floor(position);
+    float res = (factor) * end_val + ( 1.0 - factor) * start_val;
+
+
     return
-      (int16_t) ( data[round(position + 1.0)] );
+      (int16_t) ( res * 32767.0f );
   }
 
 

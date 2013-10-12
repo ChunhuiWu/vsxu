@@ -156,31 +156,25 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 }
 
 
-const double timeslot = 1.0f / 44100 * 256.0;
-
-double st = 0.0;
-
-
 vsx_sample_mixer main_mixer;
 
-// Two-channel sawtooth wave generator.
 int play_callback( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
          double streamTime, RtAudioStreamStatus status, void *userData )
 {
-  unsigned int i, j;
+  (void)inputBuffer;
+  (void)streamTime;
+
   int16_t *buffer = (int16_t *) outputBuffer;
-  int16_t *lastValues = (int16_t *) userData;
 
   if ( status )
     printf("Stream underflow detected!\n");
   // Write interleaved audio data.
-  for ( i=0; i<nBufferFrames; i++ )
+  for ( unsigned int i=0; i < nBufferFrames; i++ )
   {
     *buffer = (int16_t)main_mixer.consume_left();
     *buffer++;
     *buffer = (int16_t)main_mixer.consume_right();
     *buffer++;
-    st += timeslot;
   }
   return 0;
 }

@@ -85,7 +85,7 @@ protected:
   int current_state; // stopped or playing?
   bool valid; // if engine has managed to start, can run at all
   bool first_start;
-  bool stopped;
+  bool disabled;
   int modules_left_to_load;
   int modules_loaded;
 

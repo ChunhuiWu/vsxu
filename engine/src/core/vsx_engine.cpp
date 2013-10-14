@@ -358,8 +358,8 @@ bool vsx_engine::start()
   // a few assertions
   if (0x0 == module_list) return false;
 
-  if (!stopped) return false;
-  if (stopped) stopped = false;
+  if (!disabled) return false;
+  if (disabled) disabled = false;
   if (first_start)
   {
     valid = true;
@@ -398,12 +398,12 @@ bool vsx_engine::stop()
 {
   if (!valid) return false;
   #ifndef VSX_DEMO_MINI
-    if (!stopped)
+    if (!disabled)
     {
       for (unsigned long i = 0; i < forge.size(); ++i) {
         forge[i]->stop();
       }
-      stopped = true;
+      disabled = true;
       return true;
     }
     return false;
@@ -448,9 +448,6 @@ bool vsx_engine::render()
   ((vsx_tm*)tm)->e("engine::render");
   #endif
 
-  // reset dtime
-  engine_info.dtime = 0;
-
   // check for time control requests from the modules
   if
   (
@@ -490,7 +487,7 @@ bool vsx_engine::render()
     }
   }
 
-  if (!stopped)
+  if (!disabled)
   {
     frame_timer.start();
 
@@ -664,6 +661,11 @@ bool vsx_engine::render()
 
     //printf("MODULES LEFT TO LOAD: %d\n",i);
     last_frame_time = (float)frame_timer.dtime();
+
+    if (current_state == VSX_ENGINE_STOPPED)
+    {
+      engine_info.dtime = 0.0f;
+    }
 
     // reset input events counter
     reset_input_events();

@@ -6,6 +6,9 @@
 
 #define ONE_DIV_32767 1.0/32767.0
 
+
+#define PB_LENGTH 16384.0f
+
 class vsx_sample
 {
 protected:
@@ -17,18 +20,25 @@ protected:
   int state;
   int stereo_type;
   int rate;
+  float play_bit;
 public:
 
   vsx_sample()
   :
-  position(0.0f),
-  pitch_bend(0.0f),
-  gain(1.0f),
-  prev_left_value(0),
-  state(VSX_SAMPLE_STATE_STOPPED),
-  stereo_type(VSX_SAMPLE_MONO),
-  rate(44100)
+    position(0.0f),
+    pitch_bend(0.0f),
+    gain(1.0f),
+    prev_left_value(0),
+    state(VSX_SAMPLE_STATE_STOPPED),
+    stereo_type(VSX_SAMPLE_MONO),
+    rate(44100),
+    play_bit(-1.0f)
   {
+  }
+
+  vsx_array<int16_t>* get_data()
+  {
+    return &data;
   }
 
   inline float get_position()
@@ -63,7 +73,15 @@ public:
 
   inline int get_state()
   {
+    if (!state && play_bit > -1.0f)
+      return 1;
     return state;
+  }
+
+  inline void play()
+  {
+    pitch_bend = 1.0f;
+    state = VSX_SAMPLE_STATE_PLAYING;
   }
 
   inline void stop()
@@ -85,8 +103,23 @@ public:
 
   inline void goto_time(float t)
   {
-    position = t * (float)rate;
+    //vsx_printf("t: %f, rate: %f, stereo_type: %f\n", t, (float)rate, (float)stereo_type);
+    position = t * (float)rate * (float)stereo_type;
+
+    //vsx_printf("playbit in goto time: %f\n", play_bit);
+    if (play_bit < 0.0 && state == VSX_SAMPLE_STATE_STOPPED)
+    {
+      vsx_printf("setting play_bit\n");
+      play_bit = PB_LENGTH;
+    }
+
   }
+
+  inline float get_time()
+  {
+    return position / ((float)rate * (float)stereo_type);
+  }
+
 
   inline void set_stereo_type(int n)
   {
@@ -99,7 +132,16 @@ public:
       return 0;
 
     if (state == VSX_SAMPLE_STATE_STOPPED)
+    {
+      if (play_bit > -1.0f)
+      {
+        play_bit -= 1.0f;
+        float pp = position + (PB_LENGTH - play_bit) * (float)stereo_type ;
+        vsx_printf("playbit is active at %f\n", pp);
+        return data[ round(pp) ];
+      }
       return 0;
+    }
 
     // move our sample pointer
     position += pitch_bend * (float)stereo_type;
@@ -122,10 +164,15 @@ public:
     // method can use it if we're a mono sample
 
 
-    float start_val = data[ floor(position) ] * ONE_DIV_32767;
-    float end_val = data[ ceil(position) ] * ONE_DIV_32767;
-    float factor = position - floor(position);
+    float i_pos = position;
+    if (i_pos < 0.0f) i_pos = 0.0f;
+
+    float start_val = data[ floor(i_pos) ] * ONE_DIV_32767;
+    float end_val = data[ ceil(i_pos) ] * ONE_DIV_32767;
+    float factor = i_pos - floor(i_pos);
     float res = (factor) * end_val + (1.0 - factor) * start_val;
+
+
 
 
     prev_left_value = (int16_t) ( res * 32767.0f );
@@ -143,10 +190,12 @@ public:
     if (state == VSX_SAMPLE_STATE_STOPPED)
       return 0;
 
+    float i_pos = position;
+    if (i_pos < 0.0f) i_pos = 0.0f;
 
-    float start_val = data[ floor(position) + 1.0f ] * ONE_DIV_32767;
-    float end_val = data[ ceil(position) + 1.0f ] * ONE_DIV_32767;
-    float factor = position - floor(position);
+    float start_val = data[ floor(i_pos) + 1.0f ] * ONE_DIV_32767;
+    float end_val = data[ ceil(i_pos) + 1.0f ] * ONE_DIV_32767;
+    float factor = i_pos - floor(i_pos);
     float res = (factor) * end_val + ( 1.0 - factor) * start_val;
 
 

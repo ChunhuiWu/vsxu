@@ -21,33 +21,36 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-class vsx_module_raw_sample_play : public vsx_module
+class vsx_module_ogg_sample_trigger : public vsx_module
 {
   // in
   vsx_module_param_resource* filename;
+  vsx_module_param_float* trigger;
+  vsx_module_param_float* pitch;
+  vsx_module_param_float* gain;
   vsx_module_param_int* format;
-
   // out
 
   // private
-  vsx_sample_raw main_sample;
-
-  vsx_engine_float_array full_pcm_data_l;
-  vsx_engine_float_array full_pcm_data_r;
+  vsx_sample_ogg main_sample;
+  float trigger_old;
 
 public:
 
   void module_info(vsx_module_info* info)
   {
     info->output = 1;
-    info->identifier = "sound;raw_sample_play";
+    info->identifier = "sound;ogg_sample_trigger";
     info->description =
       "Plays 16-bit signed int PCM\n"
-      "RAW files; mono or stereo."
+      "OGG vorbis files; mono or stereo."
     ;
 
     info->in_param_spec =
       "filename:resource,"
+      "trigger:float,"
+      "pitch:float,"
+      "gain:float,"
       "format:enum?mono|stereo"
     ;
     info->out_param_spec = "";
@@ -57,12 +60,17 @@ public:
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters)
   {
     (void)out_parameters;
-
     filename = (vsx_module_param_resource*)in_parameters.create(VSX_MODULE_PARAM_ID_RESOURCE,"filename");
     filename->set("");
 
+    trigger = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"trigger");
+    pitch = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"pitch");
+    gain = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"gain");
+    gain->set(1.0f);
+
     format = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"format");
 
+    trigger_old = 0.0f;
     loading_done = true;
   }
 
@@ -79,20 +87,6 @@ public:
     {
       main_sample.set_filesystem( engine->filesystem );
       main_sample.load_filename( filename->get() );
-
-      // store the sample data in float array
-      //full_pcm_data_l.array[index]
-      const float one_div_32767 = 1.0 / 32767.0;
-      vsx_array<int16_t>* data = main_sample.get_data();
-      size_t index_data = 0;
-      for (size_t i = 0; i < data->size() >> 1; i++)
-      {
-        full_pcm_data_l.array[i] = (float)(*data)[index_data] * one_div_32767;
-        index_data++;
-        full_pcm_data_r.array[i] = (float)(*data)[index_data] * one_div_32767;
-        index_data++;
-      }
-
     }
   }
 
@@ -105,34 +99,27 @@ public:
 
   void run()
   {
-
-    engine->param_float_arrays[2] = &full_pcm_data_l;
-    engine->param_float_arrays[3] = &full_pcm_data_r;
-
-
-    if (fabs(engine->vtime - main_sample.get_time()) > 0.08)
+    if (param_updates)
     {
-      main_sample.goto_time(engine->vtime);
-      float cur_sample_time = main_sample.get_time();
+      param_updates = 0;
     }
 
-    if (engine->state == VSX_ENGINE_PLAYING)
-    {
-      if (engine->dtime < 0.0f)
-      {
-        main_sample.goto_time( engine->vtime );
-      }
-      main_sample.play();
-    }
-    if (engine->state == VSX_ENGINE_STOPPED)
+    main_sample.set_pitch_bend( trigger->get() + pitch->get() * 2.0f );
+    main_sample.set_gain( gain->get() );
+
+    main_sample.set_stereo_type( format->get() + 1 );
+
+    if (trigger->get() < 0.1f)
     {
       main_sample.stop();
-      if (engine->dtime != 0.0f)
-      {
-        main_sample.goto_time( engine->vtime );
-      }
     }
-    main_sample.set_stereo_type( format->get() + 1 );
+
+    if (trigger_old < 1.0f && trigger->get() >= 1.0f)
+    {
+      main_sample.trigger();
+    }
+
+    trigger_old = trigger->get();
   }
 };
 

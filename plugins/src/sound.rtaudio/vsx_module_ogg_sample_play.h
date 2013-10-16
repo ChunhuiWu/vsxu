@@ -21,7 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-class vsx_module_raw_sample_play : public vsx_module
+class vsx_module_ogg_sample_play : public vsx_module
 {
   // in
   vsx_module_param_resource* filename;
@@ -30,7 +30,7 @@ class vsx_module_raw_sample_play : public vsx_module
   // out
 
   // private
-  vsx_sample_raw main_sample;
+  vsx_sample_ogg main_sample;
 
   vsx_engine_float_array full_pcm_data_l;
   vsx_engine_float_array full_pcm_data_r;
@@ -40,10 +40,10 @@ public:
   void module_info(vsx_module_info* info)
   {
     info->output = 1;
-    info->identifier = "sound;raw_sample_play";
+    info->identifier = "sound;ogg_sample_play";
     info->description =
       "Plays 16-bit signed int PCM\n"
-      "RAW files; mono or stereo."
+      "OGG vorbis files; mono or stereo."
     ;
 
     info->in_param_spec =
@@ -112,20 +112,24 @@ public:
 
     if (fabs(engine->vtime - main_sample.get_time()) > 0.08)
     {
+      vsx_printf("engine vtime: %f   sample time:%f\n", engine->vtime, main_sample.get_time());
       main_sample.goto_time(engine->vtime);
       float cur_sample_time = main_sample.get_time();
+      vsx_printf("corrected sample time to %f...\n", cur_sample_time);
     }
 
     if (engine->state == VSX_ENGINE_PLAYING)
     {
       if (engine->dtime < 0.0f)
       {
+        vsx_printf("setting sample time\n");
         main_sample.goto_time( engine->vtime );
       }
       main_sample.play();
     }
     if (engine->state == VSX_ENGINE_STOPPED)
     {
+      //vsx_printf("engine is stopped at %f\n", engine->vtime );
       main_sample.stop();
       if (engine->dtime != 0.0f)
       {

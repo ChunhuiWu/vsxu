@@ -54,6 +54,8 @@ public:
 
   void set_data(T* nA, int nsize)
   {
+    if (A && !data_volatile)
+      free(A);
   	A = nA;
   	used = allocated = nsize;
   }
@@ -65,7 +67,8 @@ public:
     memcpy((void*)A, (void*)(F->get_pointer()), sizeof(T) * used);
   }
 
-  void set_volatile() {
+  void set_volatile()
+  {
     if (0 == data_volatile && A && allocated)
     {
       clear();
@@ -166,7 +169,8 @@ public:
   }
 
   vsx_array() : allocated(0),used(0),A(0),allocation_increment(1),data_volatile(0),timestamp(0) {};
-  ~vsx_array() {
+  ~vsx_array()
+  {
     if (data_volatile) return;
   	if (A) free(A);
   }

@@ -112,17 +112,14 @@ public:
 
     if (fabs(engine->vtime - main_sample.get_time()) > 0.08)
     {
-      vsx_printf("engine vtime: %f   sample time:%f\n", engine->vtime, main_sample.get_time());
       main_sample.goto_time(engine->vtime);
       float cur_sample_time = main_sample.get_time();
-      vsx_printf("corrected sample time to %f...\n", cur_sample_time);
     }
 
     if (engine->state == VSX_ENGINE_PLAYING)
     {
       if (engine->dtime < 0.0f)
       {
-        vsx_printf("setting sample time\n");
         main_sample.goto_time( engine->vtime );
       }
       main_sample.play();

@@ -38,6 +38,8 @@
 #include "fftreal/fftreal.h"
 #include <unistd.h>
 
+
+
 int rtaudio_started = 0;
 
 typedef struct
@@ -111,6 +113,7 @@ int rtaudio_type = 0;
 #include "vsx_module_raw_sample_play.h"
 #include "vsx_module_ogg_sample_trigger.h"
 #include "vsx_module_ogg_sample_play.h"
+#include "vsx_module_midi_akai_apc.h"
 
 //******************************************************************************
 //*** F A C T O R Y ************************************************************
@@ -213,6 +216,8 @@ vsx_module* create_new_module(unsigned long module, void* args)
           return (vsx_module*)(new vsx_module_ogg_sample_trigger);
       case 4:
           return (vsx_module*)(new vsx_module_ogg_sample_play);
+      case 5:
+          return (vsx_module*)(new vsx_module_midi_akai_apc_40_controller);
     }
   }
   return 0;
@@ -239,12 +244,14 @@ void destroy_module(vsx_module* m,unsigned long module)
       return delete (vsx_module_ogg_sample_trigger*)m;
     case 4:
       return delete (vsx_module_ogg_sample_play*)m;
+    case 5:
+      return delete (vsx_module_midi_akai_apc_40_controller*)m;
   }
 
 }
 
 unsigned long get_num_modules() {
-  return 5;
+  return 6;
 }
 
 void on_unload_library()

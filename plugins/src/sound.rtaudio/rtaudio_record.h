@@ -1,43 +1,19 @@
-/**
-* Project: VSXu: Realtime modular visual programming engine.
-*
-* This file is part of Vovoid VSXu.
-*
-* @author Jonatan Wallmander, Robert Wenzel, Vovoid Media Technologies AB Copyright (C) 2003-2013
-* @see The GNU Lesser General Public License (LGPL)
-*
-* VSXu Engine is free software; you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful, but
-* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-* or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
-* for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License along
-* with this program; if not, write to the Free Software Foundation, Inc.,
-* 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-
-#if (PLATFORM == PLATFORM_LINUX)
-  #include <sys/prctl.h>
-#endif
+#ifndef RTAUDIO_RECORD_H
+#define RTAUDIO_RECORD_H
 
 float fftbuf[1024];
 size_t fftbuf_it = 0;
 
+
 // rt audio instance
 RtAudio* padc_record = 0x0;
-RtAudio* padc_play = 0x0;
 
 // reference counter
 size_t rt_record_refcounter = 0;
 
-size_t rt_play_refcounter = 0;
-
 FFTReal* fftr = 0x0;
+
+
 
 const float one_div_32768 = 1.0f / 32768.0f;
 const float one_div_256 = 1.0f / 256.0f;
@@ -64,7 +40,7 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 
   int16_t* buf = (int16_t*)inputBuffer;
 
-  vsx_paudio_struct* pa_d = &pa_audio_data;
+  vsx_audio_record_buf* pa_d = &pa_audio_data;
 
   int j = 0;
   // nab left channel for spectrum data
@@ -162,120 +138,6 @@ int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
 }
 
 
-vsx_sample_mixer main_mixer;
-
-int play_callback( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
-         double streamTime, RtAudioStreamStatus status, void *userData )
-{
-  (void)inputBuffer;
-  (void)streamTime;
-  (void)userData;
-
-  int16_t *buffer = (int16_t *) outputBuffer;
-
-  if ( status )
-    printf("Stream underflow detected!\n");
-
-  //vsx_printf("buffer frames: %d latency: %d\n", nBufferFrames, padc_play->getStreamLatency());
-
-  // Write interleaved audio data.
-  for ( unsigned int i=0; i < nBufferFrames; i++ )
-  {
-    *buffer = (int16_t)main_mixer.consume_left();
-    buffer++;
-    *buffer = (int16_t)main_mixer.consume_right();
-    buffer++;
-  }
-  return 0;
-}
-
-void setup_rtaudio_play()
-{
-  if (padc_play)
-  {
-    rt_play_refcounter++;
-    return;
-  }
-  else
-  {
-    padc_play = new RtAudio((RtAudio::Api)rtaudio_type);
-    rt_play_refcounter++;
-    #if (PLATFORM == PLATFORM_WINDOWS)
-    rt_play_refcounter++;
-    #endif
-  }
-
-  if ( padc_play->getDeviceCount() < 1 )
-  {
-    printf("WARNING::::::::      No audio devices found!\n");
-    return;
-  }
-
-
-  RtAudio::StreamParameters parameters;
-
-  parameters.deviceId = padc_play->getDefaultInputDevice();
-  parameters.nChannels = 2;
-  parameters.firstChannel = 0;
-  unsigned int sampleRate = 44100;
-  unsigned int bufferFrames = 64;
-  double data[2];
-
-  //
-
-  RtAudio::StreamOptions options;
-  options.flags = RTAUDIO_MINIMIZE_LATENCY;
-  options.streamName = "vsxu";
-
-  try
-  {
-    padc_play->openStream
-    (
-      &parameters,
-      NULL,
-      RTAUDIO_SINT16,
-      sampleRate,
-      &bufferFrames,
-      &play_callback,
-      (void *)&data,
-      &options
-    );
-    padc_play->startStream();
-    padc_play->getStreamLatency();
-  }
-  catch ( RtError& e )
-  {
-    e.printMessage();
-  }
-
-}
-
-void shutdown_rtaudio_play()
-{
-  if (!padc_play) return;
-  if (rt_play_refcounter == 0) return;
-  rt_play_refcounter--;
-
-  if (rt_play_refcounter == 0)
-  {
-    try
-    {
-      // Stop the stream
-      padc_play->stopStream();
-    }
-    catch (RtError& e)
-    {
-      e.printMessage();
-    }
-
-    if ( padc_play->isStreamOpen() )
-      padc_play->closeStream();
-    delete padc_play;
-    padc_play = 0;
-  }
-}
-
-
 
 void setup_rtaudio_record()
 {
@@ -300,7 +162,7 @@ void setup_rtaudio_record()
     return;
   }
 
-  vsx_paudio_struct* pa_d = &pa_audio_data;
+  vsx_audio_record_buf* pa_d = &pa_audio_data;
 
   pa_d->wave[0].data = new vsx_array<float>;
   pa_d->wave[1].data = new vsx_array<float>;
@@ -363,3 +225,6 @@ void shutdown_rtaudio_record()
     padc_record = 0;
   }
 }
+
+
+#endif // RTAUDIO_RECORD_H

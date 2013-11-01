@@ -38,9 +38,17 @@
 #include "fftreal/fftreal.h"
 #include <unistd.h>
 
+#include <RtAudio/RtAudio.h>
+#include <RtAudio/RtError.h>
 
 
-int rtaudio_started = 0;
+#if (PLATFORM == PLATFORM_LINUX)
+  #include <sys/prctl.h>
+#endif
+
+// rt audio driver type
+int rtaudio_type = 0;
+
 
 typedef struct
 {
@@ -50,63 +58,18 @@ typedef struct
     //float spectrum[2][512];
     float vu[2];
     float octaves[2][8];
-} vsx_paudio_struct;
+} vsx_audio_record_buf;
 
-vsx_paudio_struct pa_audio_data;
+vsx_audio_record_buf pa_audio_data;
 
-/*
-i = 0..n	1.3 ^ i	   1.3 ^ i - 1	  1.3^i-1 / 1.3^n	  (1.3^i-1 / 1.3^n) * (n-1) + 1
-0	        1	         0	            0	                1
-1	        1,3	       0,3	          0,02346344	      1,211170956
-2	        1,69	     0,69	          0,053965911	      1,4856932
-3	        2,197	     1,197	        0,093619124	      1,842572116
-4	        2,8561	   1,8561	        0,145168301	      2,306514707
-5	        3,71293	   2,71293	      0,212182231	      2,909640075
-6	        4,826809	 3,826809	      0,299300339	      3,693703054
-7	        6,2748517	 5,2748517	    0,412553881	      4,712984927
-8	        8,15730721 7,15730721	    0,559783485	      6,038051361
-9	       10,60449937 9,604499373    0,75118197        7,760637726
-10       13,7858491812,78584918	    1	                10
-*/
-//void normalize_fft(float* fft, vsx_float_array& spectrum) {
-//  float B1 = pow(8.0,1.0/512.0); //1.004
-//  float dd = 1*(512.0/8.0);
-//  float a = 0;
-//  float b;
-//  float diff = 0;
-//  int aa;
-//  for (int i = 1; i < 512; ++i) {
-//    (*(spectrum.data))[i] = 0;
-//    b = (float)((pow(B1,(float)(i))-1.0)*dd);
-//    diff = b-a;
-//    aa = (int)floor(a);
 
-//    if((int)b == (int)a) {
-//      (*(spectrum.data))[i] = fft[aa]*3 * diff;
-//    }
-//    else
-//    {
-//      ++aa;
-//      (*(spectrum.data))[i] += fft[aa]*3 * (ceil(a) - a);
-//      while (aa != (int)b)
-//      {
-//        (*(spectrum.data))[i] += fft[aa]*3;
-//        ++aa;
-//      }
-//      (*(spectrum.data))[i] += fft[aa+1]*3 * (b - floor(b));
-//    }
-//    a = b;
-//  }
-//}
+#include "rtaudio_play.h"
+#include "rtaudio_record.h"
+
 
 //******************************************************************************
 //******************************************************************************
-//******************************************************************************
-//******************************************************************************
 
-int rtaudio_type = 0;
-#include "vsx_sample.h"
-#include "vsx_sample_mixer.h"
 #include "vsx_listener_rtaudio.h"
 #include "vsx_listener_mediaplayer.h"
 #include "vsx_module_raw_sample_trigger.h"

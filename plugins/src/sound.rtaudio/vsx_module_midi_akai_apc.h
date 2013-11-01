@@ -589,7 +589,7 @@ public:
         {
           intbuf.str("");
           intbuf << "multi_clip_launch_" << track_sel_i+1 << "_" << column_i+1 << "_" << row_i+1;
-          vsx_printf("param name: %s\n", intbuf.str().c_str());
+
           multi_clip_launch[track_sel_i][column_i][row_i] =  (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, intbuf.str().c_str() );
           multi_clip_launch[track_sel_i][column_i][row_i]->set(0.0f);
           intbuf.str("");
@@ -848,7 +848,6 @@ public:
           // cue level knob
           if (byte2 == CC_ID_CUE_LVEL_KNOB)
           {
-            vsx_printf("CUE LEVEL KNOB\n");
             knob->set((float)byte3);
             break;
           }
@@ -859,7 +858,6 @@ public:
               if (prev_command[1] == CC_ID_DEVICE_CONTROL_7)
               {
                 track_selection = byte1 - 0xB0;
-                vsx_printf("track selection change %d!\n",track_selection);
               }
             break;
           }

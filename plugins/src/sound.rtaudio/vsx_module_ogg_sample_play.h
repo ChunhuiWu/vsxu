@@ -21,6 +21,8 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "vsx_sample_ogg.h"
+
 class vsx_module_ogg_sample_play : public vsx_module
 {
   // in
@@ -69,7 +71,7 @@ public:
   bool init()
   {
     setup_rtaudio_play();
-    main_mixer.register_sample( &main_sample );
+    main_mixer.register_channel( &main_sample );
     return true;
   }
 
@@ -85,20 +87,19 @@ public:
       const float one_div_32767 = 1.0 / 32767.0;
       vsx_array<int16_t>* data = main_sample.get_data();
       size_t index_data = 0;
-      for (size_t i = 0; i < data->size() >> 1; i++)
+      for (size_t i = 0; i < (data->size() >> 1); i++)
       {
         full_pcm_data_l.array[i] = (float)(*data)[index_data] * one_div_32767;
         index_data++;
         full_pcm_data_r.array[i] = (float)(*data)[index_data] * one_div_32767;
         index_data++;
       }
-
     }
   }
 
   void on_delete()
   {
-    main_mixer.unregister_sample( &main_sample );
+    main_mixer.unregister_channel( &main_sample );
     shutdown_rtaudio_play();
   }
 

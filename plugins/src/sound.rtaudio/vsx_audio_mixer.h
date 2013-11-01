@@ -1,6 +1,8 @@
-class vsx_sample_mixer
+#include "vsx_audio_mixer_channel.h"
+
+class vsx_audio_mixer
 {
-  vsx_array<vsx_sample*> mixing_channels;
+  vsx_array<vsx_audio_mixer_channel*> mixing_channels;
 
 public:
 
@@ -22,7 +24,7 @@ public:
         continue;
 
       // is this channel playing?
-      if (!mixing_channels[i]->get_state())
+      if (!mixing_channels[i]->is_active())
         continue;
 
       // grab channel value
@@ -73,7 +75,7 @@ public:
         continue;
 
       // is this channel playing?
-      if (!mixing_channels[i]->get_state())
+      if (!mixing_channels[i]->is_active())
         continue;
 
       // grab channel value
@@ -106,7 +108,7 @@ public:
       (int16_t) round(current_value * 32767.0);
   }
 
-  void register_sample( vsx_sample* ns )
+  void register_channel( vsx_audio_mixer_channel* ns )
   {
     // recycle unused channels
     for (size_t i = 0; i < mixing_channels.size(); i++)
@@ -121,7 +123,7 @@ public:
     mixing_channels.push_back( ns );
   }
 
-  void unregister_sample( vsx_sample* us )
+  void unregister_channel( vsx_audio_mixer_channel* us )
   {
     // set channel pointer to zero
     for (size_t i = 0; i < mixing_channels.size(); i++)

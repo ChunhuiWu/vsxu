@@ -23,6 +23,7 @@
 
 #include "vsx_string.h"
 #include "vsx_command.h"
+#include "vsx_command_list.h"
 #include "vsx_math_3d.h"
 #include "vsx_param.h"
 #include "vsx_module.h"

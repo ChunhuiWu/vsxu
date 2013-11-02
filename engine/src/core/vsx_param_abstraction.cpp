@@ -24,6 +24,7 @@
 #include "vsx_param.h"
 #include "vsx_module.h"
 #include "vsx_command.h"
+#include "vsx_command_list.h"
 class vsx_engine_param_list;
 #include "vsx_comp_abs.h"
 #include "vsx_comp_channel.h"

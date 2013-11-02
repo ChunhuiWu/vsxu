@@ -32,6 +32,7 @@
 #include "vsx_texture_info.h"
 #include "vsx_texture.h"
 #include "vsx_command.h"
+#include "vsx_command_list.h"
 #include "vsx_font.h"
 #include "vsxfst.h"
 #include "vsx_param.h"

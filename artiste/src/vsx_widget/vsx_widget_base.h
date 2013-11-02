@@ -32,6 +32,7 @@
 #include "vsx_mouse.h"
 #include "gl_helper.h"
 #include "vsx_command.h"
+#include "vsx_command_list.h"
 #include "vsxfst.h"
 #include "vsx_math_3d.h"
 #include "vsx_texture_info.h"

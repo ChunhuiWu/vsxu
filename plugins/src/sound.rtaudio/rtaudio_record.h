@@ -15,11 +15,6 @@ FFTReal* fftr = 0x0;
 
 
 
-const float one_div_32768 = 1.0f / 32768.0f;
-const float one_div_256 = 1.0f / 256.0f;
-const float one_div_512 = 1.0f / 512.0f;
-
-
 
 int record( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
          double streamTime, RtAudioStreamStatus status, void *userData )

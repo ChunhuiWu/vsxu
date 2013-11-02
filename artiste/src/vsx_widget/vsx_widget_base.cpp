@@ -33,6 +33,7 @@
 #include "vsx_string.h"
 #include "vsx_texture.h"
 #include "vsx_font.h"
+#include "vsx_command_list.h"
 #include "vsx_command.h"
 
 #include "vsx_widget_base.h"

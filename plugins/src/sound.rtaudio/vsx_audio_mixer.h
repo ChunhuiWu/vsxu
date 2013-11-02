@@ -1,4 +1,5 @@
 #include "vsx_audio_mixer_channel.h"
+#include "vsx_audio_constants.h"
 
 class vsx_audio_mixer
 {
@@ -8,9 +9,6 @@ public:
 
   inline int16_t consume_left()
   {
-    // optimization
-    const float one_div_32768 = 1.0 / 32767.0;
-
     // accumulator
     float current_value = 0.0f;
 
@@ -59,8 +57,6 @@ public:
 
   inline int16_t consume_right()
   {
-    // optimization
-    const float one_div_32768 = 1.0 / 32767.0;
 
     // accumulator
     float current_value = 0.0f;

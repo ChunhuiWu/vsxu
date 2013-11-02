@@ -80,7 +80,7 @@
         tfs.archive_create((base_path+filename).c_str());
         vsx_command_list savelist;
         get_state_as_commandlist(savelist);
-        savelist.filesystem = &tfs;
+        savelist.set_filesystem(&tfs);
         savelist.save_to_file("_states/_default");
         for (forge_map_iter = forge_map.begin(); forge_map_iter != forge_map.end(); ++forge_map_iter) 
         {
@@ -118,7 +118,7 @@
         vsxf tfs;
         vsx_command_list savelist;
         get_state_as_commandlist(savelist);
-        savelist.filesystem = &tfs;
+        savelist.set_filesystem(&tfs);
         vsx_string filename = base_path+"states/"+str_replace(";","/",c->parts[1]);
         savelist.save_to_file(filename);
         cmd_out->add_raw(vsx_string(cmd+"_ok ")+c->parts[1]);

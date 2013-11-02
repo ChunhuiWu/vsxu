@@ -23,12 +23,13 @@
 
 #ifndef VSX_COMMAND_H
 #define VSX_COMMAND_H
+
 #include <vsx_platform.h>
 #include <map>
 #include <list>
 #include <vector>
 #include "vsxfst.h"
-#include <pthread.h>
+
 
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
@@ -142,17 +143,5 @@ public:
 VSX_COMMAND_DLLIMPORT vsx_command_s* vsx_command_parse(vsx_string& cmd_raw);
 
 
-
-
-
-// timing the vsx commands
-
-class vsx_command_timing_container {
-public:
-    double totaltime; // in milliseconds
-    int count; // divider
-    double average; // keeping the average for this entry
-    vsx_command_timing_container() : totaltime(0), count(1) {}
-};
 
 #endif

@@ -291,7 +291,7 @@ int vsx_engine::load_state(vsx_string filename, vsx_string *error_string)
 
   LOG("load_state 2")
   vsx_command_list load1;
-  load1.filesystem = &filesystem;
+  load1.set_filesystem(&filesystem);
   vsx_string i_filename = filename;
   LOG("load_state 3")
 

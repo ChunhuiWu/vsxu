@@ -130,6 +130,8 @@ public:
   {
     render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
     render_in->set(0);
+    render_in->run_activate_offscreen = true;
+
     i_fragment_program = (vsx_module_param_string*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING,"fragment_program");
     i_fragment_program->set(shader.fragment_program);
     i_vertex_program = (vsx_module_param_string*)in_parameters.create(VSX_MODULE_PARAM_ID_STRING,"vertex_program");

@@ -48,6 +48,7 @@ public:
   {
     loading_done = true;
     render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+    render_in->run_activate_offscreen = true;
 
     light_id = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"light_id");
     enabled = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"enabled");

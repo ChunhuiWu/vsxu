@@ -1,7 +1,7 @@
 class module_texture_render_surface_color_depth_buffer : public vsx_module
 {
   // in
-  vsx_module_param_render* my_render;
+  vsx_module_param_render* render_in;
   vsx_module_param_int* texture_size;
   vsx_module_param_int* float_texture;
   vsx_module_param_int* alpha_channel;
@@ -77,7 +77,8 @@ public:
   }
 
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters) {
-    my_render = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "render_in",false,false);
+    render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "render_in",false,false);
+    render_in->run_activate_offscreen = true;
     res_x = 512;
 
     float_texture = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "float_texture");

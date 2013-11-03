@@ -50,6 +50,7 @@ void module_render_gl_rotate::declare_params(vsx_module_param_list& in_parameter
   angle = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"angle");
 
 	render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+  render_in->run_activate_offscreen = true;
 
 	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 }

@@ -64,9 +64,11 @@ const unsigned int matrix_target_get_vsx[] =
 #include "module_render_gl_scale.h"
 #include "module_render_gl_target_camera.h"
 #include "module_render_gl_translate.h"
+#include "module_render_gl_texture_bind.h"
 #include "module_render_gl_viewport_size.h"
 #include "module_render_gl_build_cubemap_texture.h"
 #include "module_render_gl_texture_coord_gen.h"
+#include "module_render_gl_normalize.h"
 
 
 

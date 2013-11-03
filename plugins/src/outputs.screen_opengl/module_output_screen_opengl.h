@@ -10,7 +10,7 @@ class module_output_screen_opengl : public vsx_module
 {
   float internal_gamma;
 
-  vsx_module_param_render* my_render;
+  vsx_module_param_render* render_in;
   vsx_module_param_float* gamma_correction;
   vsx_module_param_float4* clear_color;
 
@@ -40,14 +40,14 @@ public:
   {
     VSX_UNUSED(out_parameters);
     loading_done = true;
-    my_render = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "screen");
+    render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER, "screen");
+    render_in->run_activate_offscreen = true;
 
     opengl_silent = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "opengl_silent");
     opengl_silent->set(0);
 
     gamma_correction = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"gamma_correction");
     gamma_correction->set(1.0f);
-    gamma_correction->run_activate_offscreen = false;
     internal_gamma = 1.0f;
 
     clear_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"clear_color");
@@ -55,7 +55,6 @@ public:
     clear_color->set(0.0f,1);
     clear_color->set(0.0f,2);
     clear_color->set(1.0f,3);
-    clear_color->run_activate_offscreen = false;
   }
 
   void set_gamma(float mgamma)

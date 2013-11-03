@@ -335,13 +335,6 @@ void main(void)\n\
 
 }
 
-bool activate_offscreen() {
-  return true;
-};
-
-void deactivate_offscreen() {
-}
-
   void run() {
     if
     (

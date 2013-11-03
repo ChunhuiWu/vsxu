@@ -31,11 +31,13 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   color->set(1,2);
   color->set(1,3);
   render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+  render_in->run_activate_offscreen = true;
 
   render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 }
 
-bool activate_offscreen() {
+bool activate_offscreen()
+{
   // save current matrix
   glColor4f(color->get(0),color->get(1),color->get(2),color->get(3));
   return true;

@@ -43,6 +43,7 @@ renderer.\n\
 	  depth_test = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"depth_test");
 	  depth_mask = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"depth_mask");
 		render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+    render_in->run_activate_offscreen = true;
 		render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 	}
 

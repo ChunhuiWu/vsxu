@@ -72,6 +72,7 @@ renderer.\n\
 	  loading_done = true;
 	  status = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"status");
 		render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+    render_in->run_activate_offscreen = true;
 		render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 	}
 	bool activate_offscreen() {
@@ -266,6 +267,7 @@ public:
 	  loading_done = true;
 	  status = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"status");
 		render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+    render_in->run_activate_offscreen = true;
 		render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 	}
 	bool activate_offscreen() {

@@ -95,6 +95,8 @@ public:
     spec_exp_back[0] = 0.0f;
 
 		render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+    render_in->run_activate_offscreen = true;
+
 	  faces_affected = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"faces_affected");
 	  faces_affected->set(2);
 	  ambient_reflectance = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"ambient_reflectance");

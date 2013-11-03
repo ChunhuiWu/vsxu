@@ -40,6 +40,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   translation = (vsx_module_param_float3*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT3,"translation");
 
 	render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
+  render_in->run_activate_offscreen = true;
 
 	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 }

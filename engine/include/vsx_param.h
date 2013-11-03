@@ -129,7 +129,7 @@ public:
     value_from_module(false),
     critical(false),
     all_required(false),
-    run_activate_offscreen(true)
+    run_activate_offscreen(false)
   {}
   virtual ~vsx_module_param_abs() {}
 };

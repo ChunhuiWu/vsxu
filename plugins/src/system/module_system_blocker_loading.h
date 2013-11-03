@@ -30,6 +30,7 @@ class module_system_blocker_loading : public vsx_module
       
       render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
       render_in->set(0);
+      render_in->run_activate_offscreen = true;
       render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
       render_result->set(0);
       fadeout_out = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"fadeout_out");

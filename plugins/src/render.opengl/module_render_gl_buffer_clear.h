@@ -32,6 +32,7 @@ public:
     render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
     clear_color_buffer = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"color_buffer");
     clear_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"clear_color");
+    clear_color->run_activate_offscreen = false;
     clear_depth_buffer = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"depth_buffer");
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
   }

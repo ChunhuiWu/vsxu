@@ -113,6 +113,7 @@ public:
   bool value_from_module;
   bool critical; // is this critical for whatever purpouse it exists?
   bool all_required; // when multiple stuff connected to this, do all have to return true in order to run the module?
+  bool run_activate_offscreen; // wether to run activate/deactivate offscreen methods for this parameter (default is true)
 
   const vsx_string& get_name() const {return name;}
 
@@ -127,7 +128,8 @@ public:
     valid(false),
     value_from_module(false),
     critical(false),
-    all_required(false)
+    all_required(false),
+    run_activate_offscreen(true)
   {}
   virtual ~vsx_module_param_abs() {}
 };

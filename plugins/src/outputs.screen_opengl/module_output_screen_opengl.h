@@ -32,7 +32,7 @@ public:
     ;
     info->in_param_spec = "screen:render,"
                           "gamma_correction:float?max=4&min=0&nc=1,"
-                          "clear_color:float4?nc=1";
+                          "clear_color:float4";
     info->component_class = "screen";
   }
 
@@ -47,6 +47,7 @@ public:
 
     gamma_correction = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"gamma_correction");
     gamma_correction->set(1.0f);
+    gamma_correction->run_activate_offscreen = false;
     internal_gamma = 1.0f;
 
     clear_color = (vsx_module_param_float4*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT4,"clear_color");
@@ -54,6 +55,7 @@ public:
     clear_color->set(0.0f,1);
     clear_color->set(0.0f,2);
     clear_color->set(1.0f,3);
+    clear_color->run_activate_offscreen = false;
   }
 
   void set_gamma(float mgamma)

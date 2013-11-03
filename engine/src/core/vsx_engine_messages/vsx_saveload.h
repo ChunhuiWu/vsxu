@@ -58,10 +58,10 @@
     } else
     if (cmd == "set_silent") {
       if (c->parts[1] == "1")
-      cmd_out->accept_commands = 0;
+      cmd_out->set_accept_commands(0);
       else
       if (c->parts[1] == "0")
-      cmd_out->accept_commands = 1;
+      cmd_out->set_accept_commands(1);
     } else
     if (cmd == "package_export") {
     	#ifndef SAVE_PRODUCTION

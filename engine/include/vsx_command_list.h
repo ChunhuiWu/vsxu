@@ -39,6 +39,11 @@ class vsx_command_buffer_broker
 
   vsxf* filesystem;
 
+  int accept_commands;  // 1 accepts, 0 won't accept
+  typename std::list <T*> commands; // results of commands
+  typename std::list <T*>::const_iterator iter;
+
+
 public:
 
   void set_filesystem(vsxf* new_filesystem)
@@ -46,10 +51,12 @@ public:
     filesystem = new_filesystem;
   }
 
+  void set_accept_commands(int new_value)
+  {
+    accept_commands = new_value;
+  }
 
-  int accept_commands;  // 1 accepts, 0 won't accept
-  typename std::list <T*> commands; // results of commands
-  typename std::list <T*>::const_iterator iter;
+
 
   // add copy of command at the end of the list
   T* addc(T* cmd)
@@ -203,7 +210,7 @@ public:
 
     T* t = new T;
     t->cmd = cmd;
-    t->cmd_data = i2s(cmd_data);//f.str();
+    t->cmd_data = i2s(cmd_data);
     get_lock();
       commands.push_back(t);
     release_lock();
@@ -264,9 +271,9 @@ public:
   // Thread safety: NO
   T* get_cur()
   {
-    if (iter != commands.end()) {
+    if (iter != commands.end())
       return *iter;
-    }
+
     return 0;
   }
 
@@ -338,6 +345,7 @@ public:
   }
 
 
+
   // loads from file and puts the lines in T::raw.
   // The default is not to parse.
   // Thread safety: NO
@@ -357,11 +365,7 @@ public:
     while (filesystem->f_gets((char*)&buf,65535,fp))
     {
       line = buf;
-      if (line.size())
-      {
-        if (line[line.size()-1] == 0x0A) line.pop_back();
-        if (line[line.size()-1] == 0x0D) line.pop_back();
-      }
+      line.trim_lf();
 
       if (!line.size())
         continue;
@@ -381,13 +385,13 @@ public:
     filesystem->f_close(fp);
   }
 
+
+
   // Thread safety: NO
   void save_to_file(vsx_string filename)
   {
     if (!filesystem)
-    {
       filesystem = new vsxf;
-    }
 
     vsxf_handle* fp;
     if ((fp = filesystem->f_open(filename.c_str(), "w")) == NULL)
@@ -406,27 +410,32 @@ public:
   }
 
 
+
   // Thread safety: NO
   void token_replace(vsx_string search, vsx_string replace)
   {
-    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); ++it) {
-      if ((*it)->parsed) {
-        for (unsigned long i = 0; i < (*it)->parts.size(); ++i) {
+    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); ++it)
+    {
+      if ((*it)->parsed)
+      {
+        for (size_t i = 0; i < (*it)->parts.size(); ++i)
+        {
           (*it)->parts[i] = str_replace(search, replace, (*it)->parts[i]);
         }
         (*it)->raw = str_replace(search, replace, (*it)->raw);
-        //printf("token operations on parsed lists are not implemented yet! D.J. Aww knows this.");
-      } else {
-        (*it)->raw = str_replace(search, replace, (*it)->raw);
+        continue;
       }
+      (*it)->raw = str_replace(search, replace, (*it)->raw);
     }
   }
+
 
 
   // Thread safety: NO
   void parse()
   {
-    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); ++it) {
+    for (typename std::list <T*>::iterator it = commands.begin(); it != commands.end(); ++it)
+    {
       (*it)->parse();
     }
   }
@@ -442,10 +451,10 @@ public:
 
 
   // Thread safety: YES
-  int count()
+  size_t count()
   {
     get_lock();
-    int j = commands.size();
+      size_t j = commands.size();
     release_lock();
     return j;
   }

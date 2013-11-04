@@ -554,7 +554,6 @@ public:
   void perform_draw()
   {
     glDrawElements(GL_TRIANGLES,(*mesh)->data->faces.get_used()*3,GL_UNSIGNED_INT,0);
-    glFlush();
   }
 
   void cleanup_successful_rendering()
@@ -810,6 +809,9 @@ public:
       enable_client_arrays_vbo();
       float ss;
       glMatrixMode(GL_MODELVIEW);
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->e( "mesh_render_perform_draw_particles" );
+      #endif
 
       for (unsigned long i = 0; i < particles->particles->size(); ++i)
       {
@@ -860,6 +862,9 @@ public:
       }
 
       cleanup_successful_rendering();
+      #ifdef VSXU_TM
+      ((vsx_tm*)engine->tm)->l();
+      #endif
       return;
     }
 

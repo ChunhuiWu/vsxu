@@ -395,7 +395,7 @@ public:
         {
           //printf("found vx\n");
           vsx_module_param_float* p = (vsx_module_param_float*)shader.uniform_map["_vx"]->module_param;
-          if (p) p->set( engine->gl_state->get_viewport_width() );
+          if (p) p->set( engine->gl_state->viewport_get_width() );
         }
 
         if (shader.attribute_map.find("_s") != shader.attribute_map.end())
@@ -435,7 +435,7 @@ public:
       glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
     } else
     {
-      beginBlobs(engine);
+      beginBlobs(engine->gl_state);
       glBegin(GL_QUADS);
       if (size_lifespan_type->get() == 0) {
         for (unsigned long i = 0; i < particles->particles->size(); ++i) {

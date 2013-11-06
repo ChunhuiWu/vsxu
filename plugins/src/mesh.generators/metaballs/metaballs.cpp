@@ -169,10 +169,6 @@ void CMetaballs::Render()
 	
 
 	// Lock the vertex and index buffer
-//	CGraphics *pGfx = CGraphics::GetInstance();
-
-//	pGfx->LockVertexBuffer(MAX_VERTICES, (BYTE**)&m_pVertices);
-//	pGfx->LockIndexBuffer(MAX_INDICES, (BYTE**)&m_pIndices);
 	m_nNumIndices = 0;
 	m_nFacePart = 0;
 	m_nNumVertices = 0;
@@ -502,31 +498,11 @@ int CMetaballs::ComputeGridVoxel(int x, int y, int z)
       ++m_nNumIndices;
     }
 		++i;
-//		if (i == 2000) break;
+    //if (i == 2000) break;
 	}
-	//printf("ComputeGridVoxel %d",__LINE__);
 
 	SetGridVoxelComputed(x,y,z);
 
-//	if( m_nNumIndices*3 >= MAX_INDICES-30 )
-//	{
-		// Render the computed triangles
-//		CGraphics *pGfx = CGraphics::GetInstance();
-//		IDirect3DDevice8 *pDev = pGfx->GetD3DDevice();
-
-		// Unlock buffers
-//		pGfx->UnlockVertexBuffer();
-//		pGfx->UnlockIndexBuffer();
-
-//		pDev->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, m_nNumVertices, 
-//		                                               0, m_nNumIndices/3);
-
-		// Lock the vertex and index buffer
-//		pGfx->LockVertexBuffer(MAX_VERTICES, (BYTE**)&m_pVertices);
-//		pGfx->LockIndexBuffer(MAX_INDICES, (BYTE**)&m_pIndices);
-//		m_nNumVertices = 0;
-//		m_nNumIndices = 0;
-//	}
 
 	return c;
 }

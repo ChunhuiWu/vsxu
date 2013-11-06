@@ -82,7 +82,7 @@ bool activate_offscreen()
   {
     engine->gl_state->matrix_glu_perspective(
       fov->get(),
-      (float)engine->gl_state->get_viewport_width()/(float)engine->gl_state->get_viewport_height(),
+      (float)engine->gl_state->viewport_get_width()/(float)engine->gl_state->viewport_get_height(),
       fabs(near_clipping->get()),
       far_clipping->get()
     );

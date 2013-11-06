@@ -73,15 +73,14 @@ public:
 
 
 
-  void beginBlobs()
+  void beginBlobs(vsx_gl_state* gl_state)
   {
-    glEnable(GL_TEXTURE_2D);
     GLfloat tmpMat[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, blobMat);
+    gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, blobMat );
+    gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+    gl_state->matrix_push();
+    gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, tmpMat );
 
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glGetFloatv(GL_PROJECTION_MATRIX, tmpMat);
     tmpMat[3] = 0;
     tmpMat[7] = 0;
     tmpMat[11] = 0;
@@ -94,8 +93,8 @@ public:
     v_norm(tmpMat + 4);
     v_norm(tmpMat + 8);
 
-    glLoadIdentity();
-    glMultMatrixf(tmpMat);
+    gl_state->matrix_load_identity();
+    gl_state->matrix_mult_f(tmpMat);
 
     blobMat[3] = 0;
     blobMat[7] = 0;
@@ -109,10 +108,10 @@ public:
     v_norm(blobMat + 4);
     v_norm(blobMat + 8);
 
-    glMultMatrixf(blobMat);
-    glGetFloatv(GL_PROJECTION_MATRIX, blobMat);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
+    gl_state->matrix_mult_f(blobMat);
+    gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, blobMat );
+    gl_state->matrix_pop();
+    gl_state->matrix_mode (VSX_GL_MODELVIEW_MATRIX );
 
     GLfloat upLeft[] = {-0.5f, 0.5f, 0.0f, 1.0f};
     GLfloat upRight[] = {0.5f, 0.5f, 0.0f, 1.0f};
@@ -243,7 +242,7 @@ public:
     tbx = tex_coord_b->get(0);
     tby = tex_coord_b->get(1);
     if (facing_camera->get()) {
-      beginBlobs();
+      beginBlobs(engine->gl_state);
 
       GLfloat tmpVec0[] = {blobVec0[0]*2, blobVec0[1]*2, blobVec0[2]*2};
       GLfloat tmpVec1[] = {blobVec1[0]*2, blobVec1[1]*2, blobVec1[2]*2};

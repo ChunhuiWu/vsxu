@@ -53,11 +53,6 @@ parameter:float4\
   }
 
 	bool activate_offscreen() {
-    GLfloat params[4];
-    params[0] = parameter->get(0);
-    params[1] = parameter->get(1);
-    params[2] = parameter->get(2);
-    params[3] = parameter->get(3);
     if (gen_s->get()) {
       glEnable(GL_TEXTURE_GEN_S);
       int mode = genmodes[gen_s->get()-1];
@@ -66,12 +61,16 @@ parameter:float4\
     if (gen_t->get()) {
       glEnable(GL_TEXTURE_GEN_T);
       int mode = genmodes[gen_t->get()-1];
+      if (mode != GL_SPHERE_MAP)
       glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, mode);
     }
-    if (gen_r->get()) {
+    if (gen_r->get())
+    {
       glEnable(GL_TEXTURE_GEN_R);
       int mode = genmodes[gen_r->get()-1];
-      glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, mode);
+
+      if (mode != GL_SPHERE_MAP)
+        glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, mode);
     }
     return true;
   }

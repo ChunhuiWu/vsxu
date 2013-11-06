@@ -9,13 +9,6 @@
 #include "vsx_command.h"
 #include <pthread.h>
 
-/*class vsx_command_abs
-{
-public:
-  virtual vsx_string serialize() = 0;
-  virtual void unserialize(vsx_string command) = 0;
-};*/
-
 // thread safety notice:
 //  an instance of this class shouldn't be shared among more than 2 threads hence it's a simple mutex
 //  combined with provider/consumer FIFO or LIFO buffer (pop/push, pop_front/push_front)

@@ -31,8 +31,8 @@ public:
 
   void run()
   {
-    vx->set( (float)engine->gl_state->get_viewport_width() );
-    vy->set( (float)engine->gl_state->get_viewport_height() );
+    vx->set( (float)engine->gl_state->viewport_get_width() );
+    vy->set( (float)engine->gl_state->viewport_get_height() );
   }
 
 };

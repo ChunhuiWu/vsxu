@@ -68,7 +68,7 @@ public:
         if ((*tex)->get_transform()) texture_transform();
 
         (*tex)->bind();
-        beginBlobs(engine);
+        beginBlobs( engine->gl_state );
         glBegin(GL_QUADS);
 
         float sz = size->get();

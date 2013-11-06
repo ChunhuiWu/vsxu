@@ -408,7 +408,7 @@ public:
     if (shader.uniform_map.find("_vx") != shader.uniform_map.end())
     {
       vsx_module_param_float* p = (vsx_module_param_float*)shader.uniform_map["_vx"]->module_param;
-      if (p) p->set( engine->gl_state->get_viewport_width() );
+      if (p) p->set( engine->gl_state->viewport_get_width() );
     }
 
     if (shader.uniform_map.find("_tex") != shader.uniform_map.end())

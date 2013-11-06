@@ -135,7 +135,6 @@ public:
     #ifndef VSXU_OPENGL_ES_2_0
       engine->gl_state->material_set_fv_all(&pre_material_colors[0][0][0]);
     #endif
-    glClearColor(0.0f,0.0f,0.0f,0.0f);
   }
 
   void stop()

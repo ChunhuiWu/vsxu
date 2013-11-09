@@ -84,17 +84,21 @@ public:
 
   void run()
   {
-    if (l_param_updates != param_updates) first_run = true;
+    if (l_param_updates != param_updates)
+      first_run = true;
     mesh->data->vertices[0] = vsx_vector(0);
 
-    if (first_run || n_segs != num_planes->get()) {
+    if (first_run || n_segs != num_planes->get())
+    {
       l_param_updates = param_updates;
+
       mesh->data->vertices.reset_used();
       mesh->data->faces.reset_used();
       float inc = space_between->get();
       vsx_vector vertex_normals = vsx_vector(normals->get(0),normals->get(1),normals->get(2));
       float ip = 0.0f;
-      for (int i = 0; i < (int)num_planes->get(); ++i) {
+      for (int i = 0; i < (int)num_planes->get(); ++i)
+      {
         int i4 = i*4;
         mesh->data->vertices[i4].x = -1.0f*diameter->get();
         mesh->data->vertices[i4].y = -1.0f*diameter->get();
@@ -131,6 +135,7 @@ public:
         mesh->data->faces.push_back(a);
         ip += inc;
       }
+      mesh->timestamp++;
       first_run = false;
       n_segs = (int)num_planes->get();
     }

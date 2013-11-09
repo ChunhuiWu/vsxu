@@ -183,7 +183,8 @@ public:
     int new_num_stacks = (int)num_stacks->get();
     int new_num_sectors = (int)num_sectors->get();
 
-    if (param_updates == 0) return;
+    if (param_updates == 0)
+      return;
 
     param_updates = 0;
 

@@ -218,9 +218,9 @@ Free text comments (max 300 characters)|\
   cmd_out->add_raw("get_list visuals");
   if (server_type == VSX_WIDGET_SERVER_CONNECTION_TYPE_INTERNAL)
   {
-    if (app_argv.has_param_with_value("state"))
+    if ( vsx_argvector::get_instance()->has_param_with_value("state") )
     {
-      cmd_out->add_raw("state_load "+base64_encode("states;"+app_argv.get_param_value("state")));
+      cmd_out->add_raw("state_load "+base64_encode("states;"+vsx_argvector::get_instance()->get_param_value("state")));
     } else
     cmd_out->add_raw("state_load "+base64_encode("states;_default"));
   }

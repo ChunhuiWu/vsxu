@@ -69,7 +69,6 @@ using namespace std;
 
 void vsx_engine_abs::constructor_set_default_values()
 {
-  module_list = 0x0;
   valid = false;
   no_send_client_time = false;
   g_timer_amp = 1.0f;

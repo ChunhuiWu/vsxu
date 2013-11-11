@@ -76,18 +76,13 @@ vsx_module_engine_info vsx_engine::engine_info;
 using namespace std;
 
 
-vsx_engine::vsx_engine()
+vsx_engine::vsx_engine(vsx_module_list_abs* initial_module_list)
 {
+  module_list = initial_module_list;
   constructor_set_default_values();
   loop_point_end = -1.0f;
 }
 
-vsx_engine::vsx_engine(vsx_string path)
-{
-  constructor_set_default_values();
-  loop_point_end = -1.0f;
-  log_dir = path;
-}
 
 vsx_engine::~vsx_engine()
 {
@@ -356,7 +351,11 @@ void vsx_engine::set_amp(float amp)
 bool vsx_engine::start()
 {
   // a few assertions
-  if (0x0 == module_list) return false;
+  if (0x0 == module_list)
+  {
+    vsx_printf("vsx_engine::start() error: not starting; module_list is 0x0h\n");
+    return false;
+  }
 
   if (!disabled) return false;
   if (disabled) disabled = false;

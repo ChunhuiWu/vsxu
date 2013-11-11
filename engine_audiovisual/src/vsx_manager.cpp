@@ -150,7 +150,7 @@ void vsx_manager::init(const char* base_path, const char* sound_type)
     s_type = "-sound_type_media_player";
   }
 
-  module_list = vsx_module_list_factory_create(s_type, false);
+  module_list = vsx_module_list_factory_create();
   ((vsx_statelist*)int_state_manager)->set_module_list( module_list );
 
   ((vsx_statelist*)int_state_manager)->init(b_path,vsx_string(sound_type));

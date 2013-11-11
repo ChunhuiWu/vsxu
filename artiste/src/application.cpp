@@ -69,7 +69,6 @@
 
 // global vars
 vsx_string fpsstring = "VSX Ultra "+vsx_string(vsxu_version)+" - 2012 Vovoid";
-vsx_module_list_abs* vxe_module_list;
 vsx_engine* vxe = 0x0;
 
 // from the perspective (both for gui/server) from here towards the tcp thread
@@ -421,40 +420,12 @@ void load_desktop_a(vsx_string state_name)
 
 void app_init(int id)
 {
+  if (dual_monitor && id == 0)
+    return;
 
-  if (dual_monitor && id == 0) return;
-  //if (!dual_monitor && id == 0) return;
-
-  vsx_string own_path;
-  vsx_avector<vsx_string> parts;
-  vsx_avector<vsx_string> parts2;
-
-  #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
-    vsx_string deli = "/";
-  #else
-    vsx_string deli = "\\";
-  #endif
-  own_path = app_argv[0];
-  //printf("own_path: %s\n", own_path.c_str() );
-  explode(own_path, deli, parts);
-  for (unsigned long i = 0; i < parts.size()-1; ++i) {
-    parts2.push_back(parts[i]);
-  }
-  own_path = implode(parts2,deli);
-  if (own_path.size()) own_path.push_back(deli[0]);
-
-  #ifdef VSXU_DEBUG
-  printf("own path: %s   \n", own_path.c_str() );
-  #endif
-  //printf("argc: %d %s\n",app_argc,own_path.c_str());
-  //---------------------------------------------------------------------------
-  vxe = new vsx_engine(own_path);
-
-  vxe_module_list = vsx_module_list_factory_create(app_argv.serialize(),false);
-  vxe->set_module_list(vxe_module_list);
+  vxe = new vsx_engine();
 
   vxe->set_tm(tm);
-
 
   gui_prod_fullwindow = &prod_fullwindow;
   //---------------------------------------------------------------------------
@@ -476,12 +447,8 @@ void app_print_cli_help()
          "  -p 100,100     window posision\n"
          "\n"
         );
-  vsx_module_list_abs* module_list = vsx_module_list_factory_create
-  (
-    app_argv.serialize(),
-        true
-  );
-  VSX_UNUSED(module_list);
+
+  vsx_module_list_factory_create()->print_help();
 }
 
 

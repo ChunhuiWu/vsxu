@@ -53,6 +53,7 @@
 #include "vsx_param_sequence_list.h"
 #include "vsx_sequence_pool.h"
 #include "vsx_module_list_abs.h"
+#include "vsx_module_list_factory.h"
 
 
 class vsx_timer;
@@ -158,8 +159,7 @@ public:
 
 //-- engine function / lifecycle presented in the order they should happen
   // constructors
-  vsx_engine();
-  vsx_engine(vsx_string path);
+  vsx_engine(vsx_module_list_abs* initial_module_list = vsx_module_list_factory_create() );
 
   // should be run soon after the GL surface is initialized
   bool start();

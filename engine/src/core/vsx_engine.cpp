@@ -79,6 +79,7 @@ using namespace std;
 vsx_engine::vsx_engine(vsx_module_list_abs* initial_module_list)
 {
   module_list = initial_module_list;
+  engine_info.module_list = (void*) module_list;
   constructor_set_default_values();
   loop_point_end = -1.0f;
 }

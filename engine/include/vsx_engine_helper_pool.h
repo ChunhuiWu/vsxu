@@ -42,14 +42,13 @@ protected:
 
 public:
 
-  void init(vsx_string state_name, vsx_module_list_abs* module_list, vsx_gl_state* gl_state)
+  void init(vsx_string state_name, vsx_module_list_abs* module_list)
   {
     for (size_t i = 0; i < num_engines; i++)
     {
       engines[i] = new vsx_engine_helper(
             state_name,
-            module_list,
-            gl_state
+            module_list
       );
       this->on_create(i);
       engines[i]->render(100.0f);

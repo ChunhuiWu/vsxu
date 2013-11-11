@@ -6,9 +6,11 @@ class module_texture_render_surface_color_depth_buffer : public vsx_module
   vsx_module_param_int* float_texture;
   vsx_module_param_int* alpha_channel;
   vsx_module_param_texture* depth_buffer_in;
+
   // out
   vsx_module_param_texture* texture_result;
   vsx_module_param_texture* depth_buffer_out;
+
   // internal
   int res_x, res_y;
   int dbuff;
@@ -23,8 +25,11 @@ class module_texture_render_surface_color_depth_buffer : public vsx_module
   GLuint glsl_prog;
 
   GLint	viewport[4];
+
+  vsx_gl_state* gl_state;
+
 public:
-  module_texture_render_surface_color_depth_buffer() : texture(0) {};
+  module_texture_render_surface_color_depth_buffer() : texture(0) {}
 
   void module_info(vsx_module_info* info)
   {
@@ -100,6 +105,8 @@ public:
     depth_buffer_in = (vsx_module_param_texture*)in_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"depth_buffer");
     depth_buffer_in_int = 0;
 
+    gl_state = get_gl_state();
+
     start();
   }
 
@@ -112,7 +119,7 @@ public:
   void start()
   {
     texture = new vsx_texture;
-    texture->set_gl_state(engine->gl_state);
+    texture->set_gl_state(gl_state);
     texture->init_color_depth_buffer(res_x,res_x);
     texture->valid = false;
     texture_result->set(texture);
@@ -120,7 +127,7 @@ public:
 
   bool activate_offscreen() {
     #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-      engine->gl_state->viewport_get( viewport );
+      gl_state->viewport_get( viewport );
     #endif
 
     bool rebuild = false;
@@ -154,7 +161,7 @@ public:
 
     if (texture_size->get() >= 10)
     {
-      engine->gl_state->viewport_get( viewport );
+      gl_state->viewport_get( viewport );
       int t_res_x = abs(viewport[2] - viewport[0]);
       int t_res_y = abs(viewport[3] - viewport[1]);
 

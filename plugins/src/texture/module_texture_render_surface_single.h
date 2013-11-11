@@ -23,6 +23,9 @@ class vsx_module_rendered_texture_single : public vsx_module {
   GLuint glsl_prog;
 
   GLint	viewport[4];
+
+  vsx_gl_state* gl_state;
+
 public:
   vsx_module_rendered_texture_single() : texture(0),texture2(0),which_buffer(false) {};
 
@@ -105,6 +108,9 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"texture_out");
 
   allocate_second_texture = true;
+
+  gl_state = get_gl_state();
+
   start();
 }
 
@@ -114,24 +120,25 @@ bool can_run()
   return tex.has_buffer_support();
 }
 
-void start() {
+void start()
+{
 
   which_buffer = false;
   texture = new vsx_texture;
-  texture->set_gl_state(engine->gl_state);
+  texture->set_gl_state(gl_state);
   texture->init_color_depth_buffer(res_x,res_x);
   texture->valid = false;
   texture_result->set(texture);
 
   texture2 = new vsx_texture;
-  texture2->set_gl_state(engine->gl_state);
+  texture2->set_gl_state(gl_state);
   texture2->init_color_depth_buffer(res_x,res_x);
   texture2->valid = false;
 }
 
 bool activate_offscreen() {
   #if defined(VSXU_OPENGL_ES) || defined (__APPLE__)
-    engine->gl_state->viewport_get( viewport );
+    gl_state->viewport_get( viewport );
   #endif
 
   bool rebuild = false;
@@ -157,7 +164,7 @@ bool activate_offscreen() {
 
   if (texture_size->get() >= 10)
   {
-    engine->gl_state->viewport_get( viewport );
+    gl_state->viewport_get( viewport );
     int t_res_x = abs(viewport[2] - viewport[0]);
     int t_res_y = abs(viewport[3] - viewport[1]);
 

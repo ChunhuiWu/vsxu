@@ -181,9 +181,6 @@ public:
   // get tm*
   void* get_tm();
 
-  // set gl state
-  void set_gl_state(vsx_gl_state* gl_state);
-
   // render
   //   module_output_only - if you don't want modules to run() - and thus only produce output
   //   good if you want to do multi pass rendering - most mesh and texture operations are done in run()

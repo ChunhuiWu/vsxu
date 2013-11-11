@@ -19,6 +19,9 @@ class module_texture_render_surface_color_buffer : public vsx_module {
   GLuint glsl_prog;
 
   GLint	viewport[4];
+
+  vsx_gl_state* gl_state;
+
 public:
   module_texture_render_surface_color_buffer() : texture(0) {};
 
@@ -83,6 +86,8 @@ public:
 
     texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"color_buffer");
 
+    gl_state = get_gl_state();
+
     start();
   }
 
@@ -95,7 +100,7 @@ public:
   void start()
   {
     texture = new vsx_texture;
-    texture->set_gl_state(engine->gl_state);
+    texture->set_gl_state(gl_state);
     texture->init_color_depth_buffer(res_x,res_x);
     texture->valid = false;
     texture_result->set(texture);
@@ -119,7 +124,7 @@ public:
 
     if (texture_size->get() >= 10)
     {
-      engine->gl_state->viewport_get( viewport );
+      gl_state->viewport_get( viewport );
       int t_res_x = abs(viewport[2] - viewport[0]);
       int t_res_y = abs(viewport[3] - viewport[1]);
 
@@ -200,9 +205,6 @@ public:
     if (texture)
     {
       texture->deinit_buffer();
-      #ifdef VSXU_DEBUG
-        printf("deleting texture\n");
-      #endif
       delete texture;
       texture = 0;
     }

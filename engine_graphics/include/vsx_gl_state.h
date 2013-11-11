@@ -4,6 +4,7 @@
 // shadow state of OpenGL to avoid glGet* calls
 
 #include "vsx_platform.h"
+#include <_engine_graphics_dllimport.h>
 
 #include "vsx_math_3d.h"
 
@@ -1065,6 +1066,9 @@ public:
 
 
 };
+
+
+VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_gl_state* get_gl_state();
 
 
 #endif

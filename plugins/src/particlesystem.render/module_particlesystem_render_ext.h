@@ -40,6 +40,9 @@ public:
 
   vsx_glsl shader;
 
+  vsx_gl_state* gl_state;
+
+
   vsx_vbo_bucket<GLuint, 1, GL_POINTS, GL_STREAM_DRAW, vsx_quaternion> point_bucket;
 
 
@@ -153,7 +156,7 @@ public:
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_result->set(0);
 
-
+    gl_state = get_gl_state();
   }
 
   bool init()
@@ -408,7 +411,7 @@ public:
     if (shader.uniform_map.find("_vx") != shader.uniform_map.end())
     {
       vsx_module_param_float* p = (vsx_module_param_float*)shader.uniform_map["_vx"]->module_param;
-      if (p) p->set( engine->gl_state->viewport_get_width() );
+      if (p) p->set( gl_state->viewport_get_width() );
     }
 
     if (shader.uniform_map.find("_tex") != shader.uniform_map.end())

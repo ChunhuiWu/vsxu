@@ -45,7 +45,7 @@ extern bool app_alt;
 extern bool app_shift;
 extern bool dual_monitor;
 extern vsx_tm* tm;
-extern vsx_gl_state gl_state;
+extern vsx_gl_state* gl_state;
 
 extern vsx_argvector app_argv;
 

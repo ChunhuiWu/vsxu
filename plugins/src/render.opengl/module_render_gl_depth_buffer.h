@@ -11,6 +11,9 @@ class module_render_gl_depth_buffer : public vsx_module
   // internal
   int old_depth_mask;
   int old_depth_test;
+
+  vsx_gl_state* gl_state;
+
 public:
 
 	void module_info(vsx_module_info* info)
@@ -45,23 +48,25 @@ renderer.\n\
 		render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
     render_in->run_activate_offscreen = true;
 		render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+    gl_state = get_gl_state();
 	}
 
   bool activate_offscreen()
   {
-    old_depth_mask = engine->gl_state->depth_mask_get();
-    old_depth_test = engine->gl_state->depth_test_get();
+    old_depth_mask = gl_state->depth_mask_get();
+    old_depth_test = gl_state->depth_test_get();
 
-    engine->gl_state->depth_mask_set( depth_mask->get(), true );
-    engine->gl_state->depth_test_set( depth_test->get(), true );
+    gl_state->depth_mask_set( depth_mask->get(), true );
+    gl_state->depth_test_set( depth_test->get(), true );
 
 	  return true;
 	}
 
   void deactivate_offscreen()
   {
-    engine->gl_state->depth_mask_set( old_depth_mask );
-    engine->gl_state->depth_test_set( old_depth_test );
+    gl_state->depth_mask_set( old_depth_mask );
+    gl_state->depth_test_set( old_depth_test );
 	}
 
   void output(vsx_module_param_abs* param) { VSX_UNUSED(param);

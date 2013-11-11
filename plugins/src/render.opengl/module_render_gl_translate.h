@@ -6,9 +6,12 @@ class module_render_gl_translate : public vsx_module
   vsx_module_param_float3* translation;
 
   vsx_module_param_render* render_in;
+
   // out
   vsx_module_param_render* render_result;
+
   // internal
+  vsx_gl_state* gl_state;
 
 public:
 
@@ -43,21 +46,23 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   render_in->run_activate_offscreen = true;
 
 	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+  gl_state = get_gl_state();
 }
 
 bool activate_offscreen() {
   // save current matrix
-  engine->gl_state->matrix_get_v(VSX_GL_MODELVIEW_MATRIX, tmpMat);
-  engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
-  engine->gl_state->matrix_translate_f(translation->get(0),translation->get(1),translation->get(2));
+  gl_state->matrix_get_v(VSX_GL_MODELVIEW_MATRIX, tmpMat);
+  gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
+  gl_state->matrix_translate_f(translation->get(0),translation->get(1),translation->get(2));
 	return true;
 }
 
 void deactivate_offscreen() {
   // reset the matrix to previous value
-  engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
-  engine->gl_state->matrix_load_identity();
-  engine->gl_state->matrix_mult_f(tmpMat);
+  gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
+  gl_state->matrix_load_identity();
+  gl_state->matrix_mult_f(tmpMat);
 }
 
 void output(vsx_module_param_abs* param) { VSX_UNUSED(param);

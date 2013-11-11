@@ -10,7 +10,10 @@ class module_render_gl_rotate_quat : public vsx_module
 	vsx_module_param_render* render_in;
 	// out
 	vsx_module_param_render* render_result;
-	// internal
+
+  // internal
+  vsx_gl_state* gl_state;
+
 public:
 
 
@@ -52,13 +55,16 @@ public:
     render_in->run_activate_offscreen = true;
 
   	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+    gl_state = get_gl_state();
+
   }
   vsx_quaternion bb;
 
   bool activate_offscreen() {
     // save current matrix
-    engine->gl_state->matrix_get_v(matrix_target_get_vsx[matrix_target_l->get()],tmpMat);
-    engine->gl_state->matrix_mode(matrix_target_get_vsx[matrix_target_l->get()]);
+    gl_state->matrix_get_v(matrix_target_get_vsx[matrix_target_l->get()],tmpMat);
+    gl_state->matrix_mode(matrix_target_get_vsx[matrix_target_l->get()]);
 
   	bb.x = rotation->get(0);
   	bb.y = rotation->get(1);
@@ -76,16 +82,16 @@ public:
     {
       mat = bb.matrix();
     }
-    engine->gl_state->matrix_mult_f(mat.m);
+    gl_state->matrix_mult_f(mat.m);
 //  	glMultMatrixf(mat.m);
     return true;
   }
 
   void deactivate_offscreen() {
     // reset the matrix to previous value
-    engine->gl_state->matrix_mode(matrix_target_get_vsx[matrix_target_l->get()]);
-    engine->gl_state->matrix_load_identity();
-    engine->gl_state->matrix_mult_f(tmpMat);
+    gl_state->matrix_mode(matrix_target_get_vsx[matrix_target_l->get()]);
+    gl_state->matrix_load_identity();
+    gl_state->matrix_mult_f(tmpMat);
   }
 
   void output(vsx_module_param_abs* param) { VSX_UNUSED(param);

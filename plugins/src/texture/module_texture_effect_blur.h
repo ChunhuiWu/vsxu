@@ -34,6 +34,7 @@ class module_texture_effect_blur : public vsx_module
   int res_x, res_y;
   // out
   vsx_module_param_texture* texture_result;
+
   // internal
   vsx_texture* texture;
   vsx_texture* texture2;
@@ -41,6 +42,8 @@ class module_texture_effect_blur : public vsx_module
   GLuint tex_id;
   GLuint glsl_offset_id,glsl_tex_id,glsl_attenuation;
   GLint	viewport[4];
+  vsx_gl_state* gl_state;
+
 public:
 
 
@@ -76,14 +79,16 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   passes = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"passes");
   passes->set(0);
 
+  gl_state = get_gl_state();
+
   texture = new vsx_texture;
-  texture->set_gl_state( engine->gl_state );
+  texture->set_gl_state( gl_state );
   res_x = res_y = 256;
   texture->reinit_color_buffer(res_x,res_y,true,false);
   texture->valid = true;
 
   texture2 = new vsx_texture;
-  texture2->set_gl_state( engine->gl_state );
+  texture2->set_gl_state( gl_state );
   texture2->reinit_color_buffer(res_x,res_y,true,false);
   texture2->valid = true;
 
@@ -94,6 +99,8 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   attenuation->set(1.0f);
 
   texture_result->set(texture);
+
+
 
 #ifdef __APPLE__
   return;
@@ -347,21 +354,21 @@ void main(void)\n\
     {
       //printf("############################# texture is 0 and creating new one...\n");
       texture = new vsx_texture;
-      texture->set_gl_state( engine->gl_state );
+      texture->set_gl_state( gl_state );
 
       tex_size_internal = 3;
       texture->reinit_color_buffer(res_x,res_y,true,false);
       //texture->valid = false;
 
       texture2 = new vsx_texture;
-      texture2->set_gl_state( engine->gl_state );
+      texture2->set_gl_state( gl_state );
       texture2->reinit_color_buffer(res_x,res_y,true,false);
       //texture2->valid = false;
     }
     bool rebuild = false;
     if (texture_size->get() >= 10)
     {
-      engine->gl_state->viewport_get(viewport);
+      gl_state->viewport_get(viewport);
       int t_res_x = abs(viewport[2] - viewport[0]);
       int t_res_y = abs(viewport[3] - viewport[1]);
 

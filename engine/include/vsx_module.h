@@ -109,8 +109,6 @@ typedef struct
 class vsx_module_engine_info
 {
 public:
-  // OpenGL State
-  vsx_gl_state* gl_state;
 
   // filesystem handle to use in every module's file operations
   vsxf* filesystem;
@@ -153,7 +151,6 @@ public:
 
   vsx_module_engine_info()
   {
-    gl_state = 0x0;
     state = 0;
     amp = 1.0f;
     dtime = 0.0f;

@@ -14,9 +14,13 @@ class module_render_gl_rendering_mode : public vsx_module
   vsx_module_param_int* back;
   vsx_module_param_int* smooth;
   GLboolean p_smooth;
+
   // out
   vsx_module_param_render* render_result;
+
   // internal
+  vsx_gl_state* gl_state;
+
 public:
 
 void module_info(vsx_module_info* info)
@@ -49,21 +53,23 @@ smooth_edges:enum?no|yes\
     smooth = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"smooth_edges");
     smooth->set(0);
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+    gl_state = get_gl_state();
   }
 
   bool activate_offscreen()
   {
-    p_mode[0] = engine->gl_state->polygon_mode_get( VSX_GL_FRONT );
-    p_mode[1] = engine->gl_state->polygon_mode_get( VSX_GL_BACK );
-    engine->gl_state->polygon_mode_set(VSX_GL_FRONT, rendermodes[ front->get() ] );
-    engine->gl_state->polygon_mode_set(VSX_GL_BACK, rendermodes[ back->get() ] );
+    p_mode[0] = gl_state->polygon_mode_get( VSX_GL_FRONT );
+    p_mode[1] = gl_state->polygon_mode_get( VSX_GL_BACK );
+    gl_state->polygon_mode_set(VSX_GL_FRONT, rendermodes[ front->get() ] );
+    gl_state->polygon_mode_set(VSX_GL_BACK, rendermodes[ back->get() ] );
     return true;
   }
 
   void deactivate_offscreen()
   {
-    engine->gl_state->polygon_mode_set(VSX_GL_FRONT, p_mode[0] );
-    engine->gl_state->polygon_mode_set(VSX_GL_BACK, p_mode[1] );
+    gl_state->polygon_mode_set(VSX_GL_FRONT, p_mode[0] );
+    gl_state->polygon_mode_set(VSX_GL_BACK, p_mode[1] );
   }
 
   void output(vsx_module_param_abs* param) { VSX_UNUSED(param);

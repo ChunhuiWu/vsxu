@@ -10,6 +10,8 @@ class module_render_gl_rotate : public vsx_module
   // out
   vsx_module_param_render* render_result;
   // internal
+  vsx_gl_state* gl_state;
+
 public:
   void module_info(vsx_module_info* info);
   void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list& out_parameters);
@@ -53,6 +55,9 @@ void module_render_gl_rotate::declare_params(vsx_module_param_list& in_parameter
   render_in->run_activate_offscreen = true;
 
 	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+  gl_state = get_gl_state();
+
 }
 
 bool module_render_gl_rotate::activate_offscreen() {
@@ -60,17 +65,17 @@ bool module_render_gl_rotate::activate_offscreen() {
   bb.normalize();
 
   // save current matrix
-  engine->gl_state->matrix_get_v(VSX_GL_MODELVIEW_MATRIX,tmpMat);
-  engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
-  engine->gl_state->matrix_rotate_f(angle->get()*360.0f, bb.x, bb.y, bb.z);
+  gl_state->matrix_get_v(VSX_GL_MODELVIEW_MATRIX,tmpMat);
+  gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
+  gl_state->matrix_rotate_f(angle->get()*360.0f, bb.x, bb.y, bb.z);
   return true;
 }
 
 void module_render_gl_rotate::deactivate_offscreen() {
   // reset the matrix to previous value
-  engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
-  engine->gl_state->matrix_load_identity();
-  engine->gl_state->matrix_mult_f(tmpMat);
+  gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
+  gl_state->matrix_load_identity();
+  gl_state->matrix_mult_f(tmpMat);
 }
 
 void module_render_gl_rotate::output(vsx_module_param_abs* param) { VSX_UNUSED(param);

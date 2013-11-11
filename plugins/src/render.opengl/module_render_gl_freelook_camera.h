@@ -13,7 +13,9 @@ class module_render_gl_freelook_camera : public vsx_module
   vsx_module_param_render* render_in;
   // out
   vsx_module_param_render* render_result;
+
   // internal
+  vsx_gl_state* gl_state;
 
 public:
 
@@ -69,16 +71,18 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   render_in->run_activate_offscreen = true;
 
   render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+  gl_state = get_gl_state();
 }
 
 bool activate_offscreen()
 {
-  engine->gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, matrix_projection );
-  engine->gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, matrix_modelview);
+  gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, matrix_projection );
+  gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, matrix_modelview);
 
-  engine->gl_state->matrix_glu_perspective(fov->get(), 1.0, fabs(near_clipping->get()), far_clipping->get());
-  engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-  engine->gl_state->matrix_glu_lookat(
+  gl_state->matrix_glu_perspective(fov->get(), 1.0, fabs(near_clipping->get()), far_clipping->get());
+  gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+  gl_state->matrix_glu_lookat(
 	  position->get(0),
 	  position->get(1),
 	  position->get(2),
@@ -91,19 +95,19 @@ bool activate_offscreen()
 	  upvector->get(1),
 	  upvector->get(2)
 	);
-  engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+  gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
   return true;
 }
 
 void deactivate_offscreen() {
   // reset the matrix to previous value
-  engine->gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
-  engine->gl_state->matrix_load_identity();
-  engine->gl_state->matrix_mult_f( matrix_projection );
+  gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+  gl_state->matrix_load_identity();
+  gl_state->matrix_mult_f( matrix_projection );
 
-  engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-  engine->gl_state->matrix_load_identity();
-  engine->gl_state->matrix_mult_f( matrix_modelview );
+  gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+  gl_state->matrix_load_identity();
+  gl_state->matrix_mult_f( matrix_modelview );
 }
 
 

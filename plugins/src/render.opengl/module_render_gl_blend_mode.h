@@ -47,6 +47,8 @@ class module_render_gl_blend_mode : public vsx_module
   vsx_module_param_render* render_result;
   // internal
   GLfloat prev_blend_col[4];
+
+  vsx_gl_state* gl_state;
 public:
 
 
@@ -89,43 +91,44 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   render_in->set(0);
   render_in->run_activate_offscreen = true;
   render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+  gl_state = get_gl_state();
 }
 
 
 bool activate_offscreen()
 {
-  prev_src = engine->gl_state->blend_src_get();
-  prev_dst = engine->gl_state->blend_dst_get();
-  engine->gl_state->blend_color_v(prev_blend_col);
-  engine->gl_state->blend_func(
+  prev_src = gl_state->blend_src_get();
+  prev_dst = gl_state->blend_dst_get();
+  gl_state->blend_color_v(prev_blend_col);
+  gl_state->blend_func(
     sfactors[sfactor->get()],
     dfactors[dfactor->get()]
   );
-  engine->gl_state->blend_color_set(
+  gl_state->blend_color_set(
     blend_color->get(0),
     blend_color->get(1),
     blend_color->get(2),
     blend_color->get(3)
   );
-  isblend = engine->gl_state->blend_get();
-  engine->gl_state->blend_set(1);
+  isblend = gl_state->blend_get();
+  gl_state->blend_set(1);
 
     return true;
 }
 
 void deactivate_offscreen()
 {
-  engine->gl_state->blend_func(
+  gl_state->blend_func(
     prev_src,
     prev_dst
   );
-  engine->gl_state->blend_color_set(
+  gl_state->blend_color_set(
     prev_blend_col[0],
     prev_blend_col[1],
     prev_blend_col[2],
     prev_blend_col[3]
   );
-  engine->gl_state->blend_set(isblend);
+  gl_state->blend_set(isblend);
 }
 
 

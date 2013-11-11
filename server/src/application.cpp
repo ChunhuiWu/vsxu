@@ -120,7 +120,6 @@ void app_init(int id)
   vxe_module_list = vsx_module_list_factory_create(app_argv.serialize(),false);
   vxe->set_module_list(vxe_module_list);
 
-  vxe->set_gl_state( &gl_state );
   vxe->set_tm(tm);
 
 }

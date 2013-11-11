@@ -810,11 +810,6 @@ void vsx_engine::set_tm(void *nt)
   engine_info.tm = nt;
 }
 
-void vsx_engine::set_gl_state(vsx_gl_state* gl_state)
-{
-  engine_info.gl_state = gl_state;
-}
-
 
 extern "C" vsx_engine* create_engine()
 {

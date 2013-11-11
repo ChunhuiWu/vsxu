@@ -6,11 +6,15 @@ class module_render_gl_matrix_multiply : public vsx_module
   vsx_module_param_matrix* matrix_in;
 	vsx_module_param_render* render_in;
 	vsx_module_param_int* matrix_target_l;
-	// out
+
+  // out
 	vsx_module_param_render* render_result;
-	// internal
+
+  // internal
 	vsx_matrix* mm;
 	int active;
+
+  vsx_gl_state* gl_state;
 
 public:
 
@@ -46,6 +50,8 @@ module for some interresting results.";
     render_in->run_activate_offscreen = true;
 
   	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+    gl_state = get_gl_state();
   }
 
   bool activate_offscreen() {
@@ -54,9 +60,9 @@ module for some interresting results.";
     mm = matrix_in->get_addr();
     if (mm) {
       active = true;
-      engine->gl_state->matrix_get_v(matrix_target_get_vsx[matrix_target_l->get()],tmpMat);
-      engine->gl_state->matrix_mode( matrix_target_get_vsx[matrix_target_l->get()] );
-      engine->gl_state->matrix_mult_f(mm->m);
+      gl_state->matrix_get_v(matrix_target_get_vsx[matrix_target_l->get()],tmpMat);
+      gl_state->matrix_mode( matrix_target_get_vsx[matrix_target_l->get()] );
+      gl_state->matrix_mult_f(mm->m);
     }
     return true;
   }
@@ -65,9 +71,9 @@ module for some interresting results.";
     // reset the matrix to previous value
     if (active)
     {
-      engine->gl_state->matrix_mode( matrix_target_get_vsx[matrix_target_l->get()] );
-      engine->gl_state->matrix_load_identity();
-      engine->gl_state->matrix_mult_f( tmpMat );
+      gl_state->matrix_mode( matrix_target_get_vsx[matrix_target_l->get()] );
+      gl_state->matrix_load_identity();
+      gl_state->matrix_mult_f( tmpMat );
     }
   }
 

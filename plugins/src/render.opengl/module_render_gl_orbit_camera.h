@@ -21,6 +21,8 @@ class module_render_gl_orbit_camera : public vsx_module
 	// internal
 	vsx_vector rotation_;
 
+  vsx_gl_state* gl_state;
+
 public:
 
 
@@ -87,26 +89,28 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   render_in->run_activate_offscreen = true;
 
 	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+  gl_state = get_gl_state();
 }
 
 bool activate_offscreen()
 {
-  engine->gl_state->matrix_get_v(VSX_GL_PROJECTION_MATRIX, matrix_projection);
-  engine->gl_state->matrix_get_v(VSX_GL_MODELVIEW_MATRIX, matrix_modelview);
+  gl_state->matrix_get_v(VSX_GL_PROJECTION_MATRIX, matrix_projection);
+  gl_state->matrix_get_v(VSX_GL_MODELVIEW_MATRIX, matrix_modelview);
   float dist = distance->get();
 
   if (perspective_correct->get())
   {
-    engine->gl_state->matrix_glu_perspective(
+    gl_state->matrix_glu_perspective(
       fov->get(),
-      (float)engine->gl_state->viewport_get_width()/(float)engine->gl_state->viewport_get_height(),
+      (float)gl_state->viewport_get_width()/(float)gl_state->viewport_get_height(),
       fabs(near_clipping->get()),
       far_clipping->get()
     );
   }
   else
   {
-    engine->gl_state->matrix_glu_perspective(
+    gl_state->matrix_glu_perspective(
       fov->get(),
       1.0,
       fabs(near_clipping->get()),
@@ -119,13 +123,13 @@ bool activate_offscreen()
   rotation_.z = rotation->get(2);
   rotation_.normalize();
 
-  engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
-  engine->gl_state->matrix_load_identity();
+  gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+  gl_state->matrix_load_identity();
 
 #ifdef VSXU_OPENGL_ES
 	glRotatef(-90,0,0,1);
 #endif
-  engine->gl_state->matrix_glu_lookat(
+  gl_state->matrix_glu_lookat(
 	  rotation_.x*dist+destination->get(0),
 	  rotation_.y*dist+destination->get(1),
 	  rotation_.z*dist+destination->get(2),
@@ -143,13 +147,13 @@ bool activate_offscreen()
 
 void deactivate_offscreen() {
   // reset the matrix to previous value
-  engine->gl_state->matrix_mode(VSX_GL_PROJECTION_MATRIX);
-  engine->gl_state->matrix_load_identity();
-  engine->gl_state->matrix_mult_f(matrix_projection);
+  gl_state->matrix_mode(VSX_GL_PROJECTION_MATRIX);
+  gl_state->matrix_load_identity();
+  gl_state->matrix_mult_f(matrix_projection);
 
-  engine->gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
-  engine->gl_state->matrix_load_identity();
-  engine->gl_state->matrix_mult_f(matrix_modelview);
+  gl_state->matrix_mode(VSX_GL_MODELVIEW_MATRIX);
+  gl_state->matrix_load_identity();
+  gl_state->matrix_mult_f(matrix_modelview);
 }
 
 void output(vsx_module_param_abs* param) { VSX_UNUSED(param);

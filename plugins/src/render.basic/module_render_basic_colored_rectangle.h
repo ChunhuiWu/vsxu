@@ -17,6 +17,8 @@ class module_render_basic_colored_rectangle : public vsx_module
   // internal
   vsx_matrix saved_modelview;
 
+  vsx_gl_state* gl_state;
+
 public:
 
   void module_info(vsx_module_info* info)
@@ -88,16 +90,18 @@ public:
 
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_result->set(0);
+
+    gl_state = get_gl_state();
   }
 
   void output(vsx_module_param_abs* param)
   {
     VSX_UNUSED(param);
-    engine->gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, saved_modelview.m );
-    engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX);
-    engine->gl_state->matrix_translate_f( position->get(0),position->get(1),position->get(2) );
-    engine->gl_state->matrix_rotate_f( (float)angle->get()*360, rotation_axis->get(0), rotation_axis->get(1), rotation_axis->get(2) );
-    engine->gl_state->matrix_scale_f( size->get(0), size->get(1), size->get(2) );
+    gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, saved_modelview.m );
+    gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX);
+    gl_state->matrix_translate_f( position->get(0),position->get(1),position->get(2) );
+    gl_state->matrix_rotate_f( (float)angle->get()*360, rotation_axis->get(0), rotation_axis->get(1), rotation_axis->get(2) );
+    gl_state->matrix_scale_f( size->get(0), size->get(1), size->get(2) );
 
     #ifndef VSXU_OPENGL_ES_2_0
       glColor4f(color_rgb->get(0),color_rgb->get(1),color_rgb->get(2),color_rgb->get(3));
@@ -156,8 +160,8 @@ public:
         glEnd();
       }
     #endif
-    engine->gl_state->matrix_load_identity();
-    engine->gl_state->matrix_mult_f( saved_modelview.m );
+    gl_state->matrix_load_identity();
+    gl_state->matrix_mult_f( saved_modelview.m );
     render_result->set(1);
     loading_done = true;
   }

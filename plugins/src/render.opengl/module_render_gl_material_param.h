@@ -24,6 +24,7 @@ class module_render_gl_material_param : public vsx_module
   GLfloat emission_back[4];
   GLfloat spec_exp_back[4];
 
+  vsx_gl_state* gl_state;
 
 public:
 
@@ -127,6 +128,8 @@ public:
     specular_exponent->set(0.0f);
 
 		render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+    gl_state = get_gl_state();
 	}
 
 
@@ -144,32 +147,32 @@ public:
 
     if (ff == 0 || ff == 2)
     {
-      engine->gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_AMBIENT, &ambient_front[0] );
-      engine->gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_DIFFUSE, &diffuse_front[0] );
-      engine->gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_SPECULAR, &specular_front[0] );
-      engine->gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_EMISSION, &emission_front[0] );
-      engine->gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_SHININESS, &spec_exp_front[0] );
+      gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_AMBIENT, &ambient_front[0] );
+      gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_DIFFUSE, &diffuse_front[0] );
+      gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_SPECULAR, &specular_front[0] );
+      gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_EMISSION, &emission_front[0] );
+      gl_state->material_get_fv( VSX_GL_FRONT, VSX_GL_SHININESS, &spec_exp_front[0] );
 
-      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_AMBIENT, ambient_reflectance->get_addr() );
-      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_DIFFUSE, diffuse_reflectance->get_addr() );
-      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SPECULAR, specular_reflectance->get_addr() );
-      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_EMISSION, emission_intensity->get_addr() );
-      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SHININESS, specular );
+      gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_AMBIENT, ambient_reflectance->get_addr() );
+      gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_DIFFUSE, diffuse_reflectance->get_addr() );
+      gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SPECULAR, specular_reflectance->get_addr() );
+      gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_EMISSION, emission_intensity->get_addr() );
+      gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SHININESS, specular );
 
     }
     if (ff == 1 || ff == 2)
     {
-      engine->gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_AMBIENT, &ambient_back[0] );
-      engine->gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_DIFFUSE, &diffuse_back[0] );
-      engine->gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_SPECULAR, &specular_back[0] );
-      engine->gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_EMISSION, &emission_back[0] );
-      engine->gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_SHININESS, &spec_exp_back[0] );
+      gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_AMBIENT, &ambient_back[0] );
+      gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_DIFFUSE, &diffuse_back[0] );
+      gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_SPECULAR, &specular_back[0] );
+      gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_EMISSION, &emission_back[0] );
+      gl_state->material_get_fv( VSX_GL_BACK, VSX_GL_SHININESS, &spec_exp_back[0] );
 
-      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_AMBIENT, ambient_reflectance->get_addr() );
-      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_DIFFUSE, diffuse_reflectance->get_addr() );
-      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SPECULAR, specular_reflectance->get_addr() );
-      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_EMISSION, emission_intensity->get_addr() );
-      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SHININESS, specular );
+      gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_AMBIENT, ambient_reflectance->get_addr() );
+      gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_DIFFUSE, diffuse_reflectance->get_addr() );
+      gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SPECULAR, specular_reflectance->get_addr() );
+      gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_EMISSION, emission_intensity->get_addr() );
+      gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SHININESS, specular );
     }
 
 	  return true;
@@ -180,19 +183,19 @@ public:
     unsigned int ff = faces_affected->get();
     if (ff == 0 || ff == 2)
     {
-      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_AMBIENT, &ambient_front[0] );
-      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_DIFFUSE, &diffuse_front[0] );
-      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SPECULAR, &specular_front[0] );
-      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_EMISSION, &emission_front[0] );
-      engine->gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SHININESS, &spec_exp_front[0] );
+      gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_AMBIENT, &ambient_front[0] );
+      gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_DIFFUSE, &diffuse_front[0] );
+      gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SPECULAR, &specular_front[0] );
+      gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_EMISSION, &emission_front[0] );
+      gl_state->material_set_fv( VSX_GL_FRONT, VSX_GL_SHININESS, &spec_exp_front[0] );
     }
     if (ff == 1 || ff == 2)
     {      
-      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_AMBIENT, &ambient_back[0] );
-      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_DIFFUSE, &diffuse_back[0] );
-      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SPECULAR, &specular_back[0] );
-      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_EMISSION, &emission_back[0] );
-      engine->gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SHININESS, &spec_exp_back[0] );
+      gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_AMBIENT, &ambient_back[0] );
+      gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_DIFFUSE, &diffuse_back[0] );
+      gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SPECULAR, &specular_back[0] );
+      gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_EMISSION, &emission_back[0] );
+      gl_state->material_set_fv( VSX_GL_BACK, VSX_GL_SHININESS, &spec_exp_back[0] );
     }
   }
 

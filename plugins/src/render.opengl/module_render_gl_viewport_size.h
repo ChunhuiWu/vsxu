@@ -2,10 +2,13 @@ class module_render_gl_viewport_size : public vsx_module
 {
   GLint viewport[4];
   // in
+
   // out
   vsx_module_param_float* vx;
   vsx_module_param_float* vy;
+
   // internal
+  vsx_gl_state* gl_state;
 
 public:
 
@@ -27,12 +30,14 @@ public:
     vx->set(0.0f);
     vy = (vsx_module_param_float*)out_parameters.create(VSX_MODULE_PARAM_ID_FLOAT,"vy");
     vy->set(0.0f);
+
+    gl_state = get_gl_state();
   }
 
   void run()
   {
-    vx->set( (float)engine->gl_state->viewport_get_width() );
-    vy->set( (float)engine->gl_state->viewport_get_height() );
+    vx->set( (float)gl_state->viewport_get_width() );
+    vy->set( (float)gl_state->viewport_get_height() );
   }
 
 };

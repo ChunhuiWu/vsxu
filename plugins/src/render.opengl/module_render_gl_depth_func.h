@@ -6,6 +6,7 @@ class module_render_gl_depth_func : public vsx_module
   // out
   vsx_module_param_render* render_result;
   // internal
+  vsx_gl_state* gl_state;
 public:
 
   void module_info(vsx_module_info* info)
@@ -30,18 +31,20 @@ public:
     render_in = (vsx_module_param_render*)in_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_in");
     render_in->run_activate_offscreen = true;
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+    gl_state = get_gl_state();
   }
   int old_depth_func;
   bool activate_offscreen()
   {
-    old_depth_func = engine->gl_state->depth_function_get();
-    engine->gl_state->depth_function_set( depth_func->get() );
+    old_depth_func = gl_state->depth_function_get();
+    gl_state->depth_function_set( depth_func->get() );
     return true;
   }
 
   void deactivate_offscreen()
   {
-    engine->gl_state->depth_function_set( old_depth_func );
+    gl_state->depth_function_set( old_depth_func );
   }
 
   void output(vsx_module_param_abs* param)

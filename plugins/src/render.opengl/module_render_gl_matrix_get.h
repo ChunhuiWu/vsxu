@@ -3,11 +3,15 @@ class module_render_gl_matrix_get : public vsx_module
   // in
 	vsx_module_param_render* render_in;
 	vsx_module_param_int* matrix_target;
-	// out
+
+  // out
 	vsx_module_param_render* render_result;
   vsx_module_param_matrix* matrix_out;
-	// internal
+
+  // internal
 	vsx_matrix matrix;
+
+  vsx_gl_state* gl_state;
 
 public:
 
@@ -33,13 +37,15 @@ public:
     matrix_out->set(matrix);
   	render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
   	render_result->set(1);
+
+    gl_state = get_gl_state();
   }
 
 
   void output(vsx_module_param_abs* param) {
     if (param == render_result) {
       // save current matrix
-      engine->gl_state->matrix_get_v(matrix_target_get_vsx[matrix_target->get()],matrix.m);
+      gl_state->matrix_get_v(matrix_target_get_vsx[matrix_target->get()],matrix.m);
    	  matrix_out->set(matrix);
       render_result->set(1);
     }

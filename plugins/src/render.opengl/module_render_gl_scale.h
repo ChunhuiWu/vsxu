@@ -9,7 +9,9 @@ class module_render_gl_scale : public vsx_module
 	vsx_module_param_render* render_in;
 	// out
 	vsx_module_param_render* render_result;
-	// internal
+
+  // internal
+  vsx_gl_state* gl_state;
 
 public:
 
@@ -58,6 +60,9 @@ public:
     render_in->run_activate_offscreen = true;
 
     render_result = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
+
+    gl_state = get_gl_state();
+
   }
 
   bool activate_offscreen()
@@ -66,20 +71,20 @@ public:
     switch(matrix->get())
     {
       case 0:
-        engine->gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, tmpMat );
-        engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+        gl_state->matrix_get_v( VSX_GL_MODELVIEW_MATRIX, tmpMat );
+        gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
       break;
       case 1:
-        engine->gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, tmpMat );
-        engine->gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+        gl_state->matrix_get_v( VSX_GL_PROJECTION_MATRIX, tmpMat );
+        gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
       glMatrixMode(GL_PROJECTION);
       break;
       case 2:
-        engine->gl_state->matrix_get_v( VSX_GL_TEXTURE_MATRIX, tmpMat );
-        engine->gl_state->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+        gl_state->matrix_get_v( VSX_GL_TEXTURE_MATRIX, tmpMat );
+        gl_state->matrix_mode( VSX_GL_TEXTURE_MATRIX );
       break;
     }
-    engine->gl_state->matrix_scale_f( scale->get(0),scale->get(1),scale->get(2) );
+    gl_state->matrix_scale_f( scale->get(0),scale->get(1),scale->get(2) );
     return true;
   }
 
@@ -89,17 +94,17 @@ public:
     switch(matrix->get())
     {
       case 0:
-      engine->gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
+      gl_state->matrix_mode( VSX_GL_MODELVIEW_MATRIX );
       break;
       case 1:
-      engine->gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
+      gl_state->matrix_mode( VSX_GL_PROJECTION_MATRIX );
       break;
       case 2:
-      engine->gl_state->matrix_mode( VSX_GL_TEXTURE_MATRIX );
+      gl_state->matrix_mode( VSX_GL_TEXTURE_MATRIX );
       break;
     }
-    engine->gl_state->matrix_load_identity();
-    engine->gl_state->matrix_mult_f( tmpMat );
+    gl_state->matrix_load_identity();
+    gl_state->matrix_mult_f( tmpMat );
   }
 
   void output(vsx_module_param_abs* param)

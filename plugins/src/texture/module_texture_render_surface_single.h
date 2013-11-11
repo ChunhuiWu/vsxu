@@ -109,7 +109,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
 
   allocate_second_texture = true;
 
-  gl_state = get_gl_state();
+  gl_state = vsx_gl_state::get_instance();
 
   start();
 }

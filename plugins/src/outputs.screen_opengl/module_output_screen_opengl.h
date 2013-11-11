@@ -58,7 +58,7 @@ public:
     clear_color->set(0.0f,2);
     clear_color->set(1.0f,3);
 
-    gl_state = get_gl_state();
+    gl_state = vsx_gl_state::get_instance();
   }
 
   void set_gamma(float mgamma)

@@ -31,7 +31,7 @@ public:
     width->set(1.0f);
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     render_out->set(0);
-    gl_state = get_gl_state();
+    gl_state = vsx_gl_state::get_instance();
   }
   bool activate_offscreen()
   {

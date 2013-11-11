@@ -79,7 +79,7 @@ void declare_params(vsx_module_param_list& in_parameters, vsx_module_param_list&
   passes = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT,"passes");
   passes->set(0);
 
-  gl_state = get_gl_state();
+  gl_state = vsx_gl_state::get_instance();
 
   texture = new vsx_texture;
   texture->set_gl_state( gl_state );

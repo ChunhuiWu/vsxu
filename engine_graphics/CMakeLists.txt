@@ -59,7 +59,6 @@ set(SOURCES
   src/vsx_font.cpp
   src/vsx_texture.cpp
   src/gl_helper.cpp
-  src/vsx_gl_state.cpp
 )
 
 if (VSXU_OPENGL_ES_2_0 EQUAL 1)

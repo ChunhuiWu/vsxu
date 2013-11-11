@@ -211,7 +211,7 @@ int main(int argc, char* argv[])
   set_modifiers();
 
   // initialize gl state
-  gl_state = get_gl_state();
+  gl_state = vsx_gl_state::get_instance();
 
 
   int     width, height, running, frames, x, y;

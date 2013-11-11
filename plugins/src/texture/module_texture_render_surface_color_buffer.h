@@ -86,7 +86,7 @@ public:
 
     texture_result = (vsx_module_param_texture*)out_parameters.create(VSX_MODULE_PARAM_ID_TEXTURE,"color_buffer");
 
-    gl_state = get_gl_state();
+    gl_state = vsx_gl_state::get_instance();
 
     start();
   }

@@ -64,7 +64,7 @@ public:
     dot_size->set(1.0f);
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
 
-    gl_state = get_gl_state();
+    gl_state = vsx_gl_state::get_instance();
   }
 
   void output(vsx_module_param_abs* param)

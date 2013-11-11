@@ -137,7 +137,7 @@ public:
     vsx_string h = shader.link();
     render_out = (vsx_module_param_render*)out_parameters.create(VSX_MODULE_PARAM_ID_RENDER,"render_out");
     redeclare_in_params(in_parameters);
-    gl_state = get_gl_state();
+    gl_state = vsx_gl_state::get_instance();
   }
 
   void output(vsx_module_param_abs* param)

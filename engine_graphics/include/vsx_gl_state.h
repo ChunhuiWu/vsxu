@@ -151,7 +151,7 @@ const int gl_polygon_fill[] =
   #endif
 };
 
-class vsx_gl_state
+VSX_ENGINE_GRAPHICS_DLLIMPORT class vsx_gl_state
 {
 public:
 
@@ -1062,13 +1062,15 @@ public:
     #endif
   }
 
-
+  static vsx_gl_state* get_instance()
+  {
+    static vsx_gl_state state;
+    return &state;
+  }
 
 
 };
 
-
-VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_gl_state* get_gl_state();
 
 
 #endif
